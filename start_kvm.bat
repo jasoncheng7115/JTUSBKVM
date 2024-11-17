@@ -23,7 +23,7 @@ for /f "tokens=2 delims=." %%I in ("%PYTHON_VERSION%") do set "PYTHON_MINOR=%%I"
 
 if %PYTHON_MAJOR% LSS 3 (
     echo Python 版本過舊！
-    echo 當前版本：%PYTHON_VERSION%
+    echo 目前版本：%PYTHON_VERSION%
     echo 需要 Python 3.6 或更新版本
     echo.
     pause
@@ -31,7 +31,7 @@ if %PYTHON_MAJOR% LSS 3 (
 )
 if %PYTHON_MAJOR%==3 if %PYTHON_MINOR% LSS 6 (
     echo Python 版本過舊！
-    echo 當前版本：%PYTHON_VERSION%
+    echo 目前版本：%PYTHON_VERSION%
     echo 需要 Python 3.6 或更新版本
     echo.
     pause

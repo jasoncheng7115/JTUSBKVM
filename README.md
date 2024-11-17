@@ -8,6 +8,8 @@
 
 -----
 
+## 緣起
+
 做為到處建置系統的 IT 人，有時難免會遇到在機房沒有機架式 KVM 或是搶不到 KVM 推車的窘境，或是在各種 LAB 環境要準備螢幕鍵盤滑鼠麻煩的場景。在幾年前我就在看 ATEN CV211 這款行動式 USB 帶線 KVM 產品，搭配筆電用非常方便，可惜它的價格接近一萬元，對我來說有點困難 😭😭😭
 
 最近又常常有這樣的需求，有天忽然冒出「不如自己用 Arduino 自幹一組！」這樣的想法，於是........就搞出來了 ✌✌✌
@@ -15,6 +17,8 @@
 當然這功能比不上大廠專業產品，例如 ISO 映像檔掛接的功能就沒有。要有當然也做得出來，可是要用更高階的開發板....失去初衷了，而且這款是 USBKVM，我人都走到伺服器前面了順手插個 USB 碟不就好了 (笑)
 
 ---
+
+## 功能
 
 ### 硬體功能
 * 一條 USB C 線接至控制端電腦 (搭配 TYPE A 轉接頭)
@@ -30,6 +34,8 @@
 * 具擷圖、錄影功能
   
 ---
+
+## 組成
 
 ### 硬體組成
 * Arduino Pro Micro 開發板 x 2
@@ -52,3 +58,16 @@
 * Arduino 程式碼分為 A B 兩片開發板，已先釋出 A 板
 
 ---
+
+## 擷圖
+
+
+連線控制 Linux 主機
+
+![控制 Linux 主機](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/3%20linux.png)
+
+
+連線控制 Windows 主機
+
+![控制 Windows 主機](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/4%20windows.png)
+

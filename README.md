@@ -63,12 +63,17 @@
 
 
 連接控制 Windows 主機擷圖
-![控制 Windows 主機](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/4%20windows.png)
+
+![控制 Windows 主機擷圖](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/4%20windows.png)
 
 連接控制 Linux 主機擷圖
-![控制 Linux 主機](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/3%20linux.png)
 
-連接控制 Windows 主機影片
-![控制 Windows 主機影片](https://github.com/jasoncheng7115/JTUSBKVM/blob/main/screenshot/5%20windows_ok_cut.mp4)
+![控制 Linux 主機擷圖](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/3%20linux.png)
+
+連接控制 Linux 主機錄影
+
+![控制 Linux 主機錄影](https://github.com/jasoncheng7115/JTUSBKVM/blob/main/screenshot/6%20linux_ok_cut.gif?raw=true)
 
 
+連接控制 Windows 主機錄影
+![控制 Windows 主機錄影](https://github.com/jasoncheng7115/JTUSBKVM/blob/main/screenshot/5%20windows_ok_cut.gif?raw=true)

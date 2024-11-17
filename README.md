@@ -53,7 +53,7 @@
 * 純前端 HTML + CSS + JavaScript
 * 完全無後端程式碼，均在使用者本機運作
 * 視訊輸入採用瀏覽器標準 MediaStream API
-* 控制器連接採用瀏覽器標準  Web Serial API
+* 控制器連接採用瀏覽器標準 Web Serial API
 * Web 面我還沒放到外網，暫時只有我這內網可以連，之後會開放
 * Arduino 程式碼分為 A B 兩片開發板，已先釋出 A 板
 

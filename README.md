@@ -85,3 +85,12 @@
 連接控制 Windows 主機錄影
 
 ![控制 Windows 主機錄影](https://github.com/jasoncheng7115/JTUSBKVM/blob/main/screenshot/5%20windows_ok_cut.gif?raw=true)
+
+
+---
+
+## 接線圖
+
+> TODO
+>
+> 

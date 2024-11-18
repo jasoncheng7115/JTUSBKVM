@@ -1,6 +1,24 @@
 /*
-* Developer: Jason Cheng
-* Email: jason@jason.tools
+
+=========================================================================
+
+JTUSBKVM - Arduino Board A (Source Controller)
+
+Version: 1.0.0
+Last Update: 2024-11-18
+
+Author: Jason Cheng
+E-mail: jason@jason.tools
+GitHub: https://github.com/jasoncheng7115
+
+License: GNU Affero General Public License v3.0
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+any later version.
+
+=========================================================================
+
 */
 
 void setup() {

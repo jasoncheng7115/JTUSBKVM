@@ -17,6 +17,46 @@ by the Free Software Foundation, either version 3 of the License, or
 any later version.
 
 =========================================================================
+
+Required Installations:
+
+1. Python Packages (Required)
+   Windows:
+   pip install requests
+
+   macOS:
+   # 建立並使用虛擬環境（推薦）
+   python3 -m venv jtusbkvm-env
+   source jtusbkvm-env/bin/activate
+   pip3 install requests
+   
+   # 或使用 Homebrew（替代方案）
+   brew install python-requests
+
+   Linux:
+   # Debian/Ubuntu - 使用系統套件管理器
+   sudo apt install python3-requests
+   
+   # 或使用虛擬環境（推薦）
+   python3 -m venv jtusbkvm-env
+   source jtusbkvm-env/bin/activate
+   python3 -m pip install requests
+   
+
+2. OpenSSL (Required)
+   Windows:
+   Download and install from https://slproweb.com/products/Win32OpenSSL.html
+   
+   macOS:
+   brew install openssl
+   
+   Linux (Ubuntu/Debian):
+   sudo apt install openssl
+   
+   Linux (CentOS/RHEL):
+   sudo yum install openssl
+
+=========================================================================
 """
 
 import http.server

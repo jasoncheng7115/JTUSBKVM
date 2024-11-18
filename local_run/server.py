@@ -1,4 +1,24 @@
-# server.py
+"""
+=========================================================================
+
+JTUSBKVM - Web Console Loader
+
+Version: 1.0.1
+Last Update: 2024-11-18
+
+Author: Jason Cheng
+E-mail: jason@jason.tools
+GitHub: https://github.com/jasoncheng7115
+
+License: GNU Affero General Public License v3.0
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+any later version.
+
+=========================================================================
+"""
+
 import http.server
 import ssl
 import os
@@ -8,7 +28,60 @@ import subprocess
 import datetime
 import shutil
 import sys
+import re
+import requests
 from pathlib import Path
+
+# 網頁檔案的遠端位置
+REMOTE_HTML_URL = "https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/web/jtusbkvm.html"
+
+def get_version_from_html(content):
+    """從 HTML 內容中取得版本號"""
+    version_match = re.search(r'Version:\s*(\d+\.\d+\.\d+)', content)
+    if version_match:
+        return version_match.group(1)
+    return "0.0.0"
+
+def check_and_update_html():
+    """檢查並更新 HTML 檔案"""
+    local_path = Path('index.html')
+    
+    try:
+        # 嘗試下載遠端檔案
+        response = requests.get(REMOTE_HTML_URL, timeout=5)
+        response.raise_for_status()
+        remote_content = response.text
+        remote_version = get_version_from_html(remote_content)
+        
+        # 如果本地檔案存在，比較版本
+        if local_path.exists():
+            with open(local_path, 'r', encoding='utf-8') as f:
+                local_content = f.read()
+                local_version = get_version_from_html(local_content)
+                
+            # 比較版本號
+            if remote_version > local_version:
+                print(f'發現新版本 {remote_version}，更新中...')
+                with open(local_path, 'w', encoding='utf-8') as f:
+                    f.write(remote_content)
+                print('更新完成')
+            else:
+                print(f'目前版本 {local_version} 已是最新')
+        else:
+            # 如果本地檔案不存在，直接下載
+            print('下載網頁檔案...')
+            with open(local_path, 'w', encoding='utf-8') as f:
+                f.write(remote_content)
+            print('下載完成')
+            
+    except Exception as e:
+        print(f'檢查更新時發生錯誤: {str(e)}')
+        print('使用本地檔案')
+        if not local_path.exists():
+            print('錯誤：找不到網頁檔案')
+            return False
+    
+    return True
 
 def check_openssl():
     """檢查是否有安裝 OpenSSL"""
@@ -186,6 +259,11 @@ def open_supported_browser(url):
 def main():
     # 確保在正確的目錄
     os.chdir(Path(__file__).parent)
+    
+    # 檢查並更新 HTML 檔案
+    if not check_and_update_html():
+        input('按 Enter 鍵結束程式...')
+        return
     
     # 建立 SSL 憑證
     if not create_cert():

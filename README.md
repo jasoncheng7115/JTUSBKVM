@@ -33,7 +33,7 @@
 * 支援功能鍵、特殊鍵與修飾鍵
 * 支援貼上功能，可一次送出一批指令 (僅限英文、數字、符號，中日韓文等無法送出)
 * 具擷圖、錄影功能
-* 支援 Windows、Linux、macOS
+* 支援 Windows、Linux、macOS，搭配 Chrome 或 Edge 瀏覽器
 * 網路設備 Console 連線設定終端機 (開發中)
   
 ---

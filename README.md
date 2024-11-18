@@ -37,6 +37,11 @@
 
 ## 組成
 
+硬體雛形版本
+![硬體雛形版本](https://github.com/jasoncheng7115/JTUSBKVM/blob/main/screenshot/1%20%E5%85%A8%E9%85%8D.JPG?raw=true)
+
+
+
 ### 硬體組成
 * Arduino Pro Micro 開發板 x 2
 * HDMI 影像擷取器 x 1 

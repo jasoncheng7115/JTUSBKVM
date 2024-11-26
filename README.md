@@ -80,13 +80,13 @@
 ## 實例
 
 
-連接控制 Windows 主機擷圖 (v1.3)
+從 macOS 連接控制 Windows 主機擷圖 (v1.3)
 
 ![控制 Windows 主機擷圖](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/windows_1.png)
 
-連接控制 Linux 主機擷圖 (v1.0)
+從 Windows 連接控制 Linux 主機擷圖 (v1.3)
 
-![控制 Linux 主機擷圖](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/3%20linux.png)
+![控制 Linux 主機擷圖](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/linux_from_windows.png)
 
 連接控制 Console 序列終端機 (v1.3)
 ![控制 Console 序列終端機擷圖](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/console_cisco.png)

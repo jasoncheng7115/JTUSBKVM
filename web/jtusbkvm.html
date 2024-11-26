@@ -5,12 +5,13 @@
 
 JTUSBKVM - Web Console
 
-Version: 1.0.0
-Last Update: 2024-11-18
+Version: 1.3.2
+Last Update: 2024-11-26
 
-Author: Jason Cheng
-E-mail: jason@jason.tools
-GitHub: https://github.com/jasoncheng7115
+Author  : Jason Cheng
+E-mail  : jason@jason.tools
+GitHub  : https://github.com/jasoncheng7115
+WebSite : https://blog.jason.tools , https://www.jason.tools 
 
 License: GNU Affero General Public License v3.0
 This program is free software: you can redistribute it and/or modify
@@ -20,12 +21,41 @@ any later version.
 
 =========================================================================
 
+This software uses the following open source packages:
+
+Xterm.js - https://github.com/xtermjs/xterm.js
+License: MIT License
+Copyright (c) 2014-2023, The xterm.js authors (https://github.com/xtermjs/xterm.js)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+=========================================================================
+
 -->
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <title>JTUSBKVM - Jason Tools</title>
     <link rel="icon" type="image/png" sizes="512x512" href="logo-1.png">
+    <link rel="stylesheet" href="js/xterm.css" />
+    <script src="js/xterm.js"></script>
+    <script src="js/xterm-addon-fit.js"></script>
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -40,19 +70,38 @@ any later version.
         }
         #header {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
             background: #f0f0f0;
-            padding: 5px;
+            padding: 1px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-            min-height: 50px;
+            gap: 1px;
         }
+
         #titleContainer {
             display: flex;
             align-items: center;
-            margin-bottom: 0;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 5px;
+        }
+
+        #controls, #rightControls {
+            display: inline-flex;  
+            align-items: center;
+            background: #e8e8e8;
+            border-radius: 4px;
+            padding: 5px;
+            gap: 5px;
+            flex: 0 0 auto;  
+            white-space: nowrap;  /* 防止內容換行 */
+        }
+        #controlsContainer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            width: 100%;
+            background: #f0f0f0;
+            padding: 0px;
         }
         #logo {
             height: 32px;
@@ -60,29 +109,97 @@ any later version.
         }
         #title {
             font-weight: bold;
+            margin-right: 15px;
         }
-        #controls {
-            display: flex;
-            flex-wrap: wrap;
+
+        #rightControls .button-group {
+            display: inline-flex;
+            gap: 3px;
             align-items: center;
-            gap: 5px;
+            flex-shrink: 0;
         }
-        #rightControls {
-            display: flex;
-            flex-wrap: wrap;
+        #rightControls {          
+            display: inline-flex;
             align-items: center;
+            background: #e8e8e8;
+            border-radius: 4px;
+            padding: 5px;
             gap: 5px;
         }
         #videoContainer {
             flex-grow: 1;
             position: relative;
             background: black;
-            overflow: hidden; /* 改為 hidden 以避免捲軸 */
+            overflow: hidden;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
+            width: 100%;  /* 確保容器佔滿寬度 */
+            height: 100%; /* 確保容器佔滿高度 */
         }
+        #showTerminal {
+            margin-left: 15px;
+            padding: 5px 15px;
+            background-color: #2196F3; 
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #showTerminal:before {
+            content: "🖥️"; 
+            font-size: 14px;
+        }
+
+        #showTerminal:hover {
+            background-color: #1976D2;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: translateY(-1px);
+        }
+
+        #showTerminal:active {
+            background-color: #0D47A1;
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        #terminalWindow {
+            position: absolute;
+            width: 600px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            min-width: 400px;
+            min-height: 36px;
+            resize: both;       
+            overflow: auto;     
+            padding: 0;         
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, 
+                        rgba(0, 0, 0, 0.22) 0px 15px 12px;
+        }
+
+        #terminalHeader {
+            padding: 8px;
+            background: #333;
+            color: #fff; 
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 36px; 
+        }
+
+
 
         video {
             max-width: 100%;
@@ -97,23 +214,22 @@ any later version.
             position: absolute;
             top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
             width: 100%;
             height: 100%;
             background: transparent;
             outline: none;
             cursor: crosshair;
+            z-index: 10;  /* 確保覆蓋層在最上層 */
         }
         select, button, input[type="text"] {
             height: 28px;
-            line-height: 1;
             padding: 0 8px;
-            margin: 0;
-            vertical-align: middle;
             font-size: 12px;
-            border: 1px solid #000;
-            border-radius: 0;
-            background-color: #e0e0e0;
-            transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background: #fff;
             cursor: pointer;
         }
         button:hover, input[type="text"]:hover {
@@ -178,17 +294,124 @@ any later version.
             border-color: #ccc;
             cursor: not-allowed;
         }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .button-group {
+            display: inline-flex;  /* 改為 inline-flex */
+            gap: 3px;
+            align-items: center;
+            flex-shrink: 0;  /* 防止按鈕組被壓縮 */
+        }
+  
         .separator {
             height: 28px;
             margin: 0 5px;
             border-left: 1px solid #ccc;
+            flex-shrink: 0;
         }
-        .control-label {
+        select, button {
+            height: 28px;
+            padding: 0 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .header-label {
+            height: 32px;
+            line-height: 32px;
+            font-size: 14px;
+            font-weight: bold; 
+            flex-shrink: 0;  /* 防止標籤被壓縮 */
+            white-space: nowrap;
+        }
+        .button-wrapper {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-left: auto;  /* 將整個按鈕區推到標籤右側 */
+        }
+        .terminal-label {
             line-height: 28px;
             margin: 0;
             padding: 0 5px;
             font-weight: bold;
             font-size: 12px;
+            color: #fff;  /* 淺色文字，用於深色背景 */
+        }
+        .terminal-controls button {
+            width: 24px;          /* 固定按鈕寬度 */
+            height: 24px;         /* 固定按鈕高度 */
+            line-height: 24px;    /* 垂直置中 */
+            padding: 0;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .terminal-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;  /* 按鈕間距 */
+        }
+        .terminal-controls button:hover {
+            background: #444;
+            border-radius: 3px;
+        }
+
+        #terminalContent {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 36px);
+            min-height: 250px;
+        }
+        #terminal-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 10px;  
+            min-height: 0; 
+            scrollbar-width: thin;
+            scrollbar-color: #666 #1e1e1e;
+        }
+        #terminal-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        #terminal-container::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+
+        #terminal-container::-webkit-scrollbar-thumb {
+            background-color: #666;
+            border-radius: 4px;
+            border: 2px solid #1e1e1e;
+        }
+
+        #terminal-container::-webkit-scrollbar-thumb:hover {
+            background-color: #888;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-icon {
+            font-size: 16px;
+        }
+        .xterm {
+            flex: 1;
+            height: 100% !important;
         }
         #fnKeysPopup {
             display: none;
@@ -215,6 +438,7 @@ any later version.
             color: white;
             font-size: 24px;
             display: none;
+            z-index: 5;  /* 確保文字在視訊之上，但在覆蓋層之下 */
         }
         #recordingTime {
             display: none;
@@ -229,17 +453,13 @@ any later version.
         #video:not([src]):not([srcObject]) + #overlay + #noVideoText {
             display: block;
         }
-        @media (max-width: 600px) {
-            #controls {
-                flex-direction: column;
-                align-items: flex-start;
+        @media (max-width: 768px) {
+            #controls, #rightControls {
+                width: 100%;
             }
-            #rightControls {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .separator {
-                display: none;
+            
+            .button-group {
+                margin-left: 0;
             }
         }
     </style>
@@ -248,36 +468,51 @@ any later version.
     <div id="header">
         <div id="titleContainer">
             <img id="logo" src="logo-1.png" alt="Logo">
-            <div id="title">JTUSBKVM</div>
+            <div id="title">JTUSBKVM v1.3</div>
+            <button id="showTerminal">序列終端機</button>
         </div>
-        <div id="controls">
-            <span class="control-label">控制</span>
-            <button id="connectController">🟢 連接</button>
-            <button id="disconnectController" disabled>🔴 中斷</button>
-            <button id="ctrlAltDelButton" disabled>Ctrl+Alt+Delete</button>
-            <button id="fnButton" class="toggle-button" disabled>Fn</button>
-            <button id="winButton" class="toggle-button" disabled>Win</button>
-            <button id="ctrlButton" class="toggle-button" disabled>Ctrl</button>
-            <button id="altButton" class="toggle-button" disabled>Alt</button>
-            <button id="releaseAllModifiers" class="toggle-button" disabled>🔄 釋放</button>
-            <button id="pasteText" disabled>📋 貼上</button>
-            <div class="separator"></div>
+        <div id="controlsContainer">
+            <div id="controls">
+                <span class="header-label">控制</span>
+                <div class="button-wrapper">
+                    <div class="button-group">
+                        <button id="connectController">🟢 連接</button>
+                        <button id="disconnectController" disabled>🔴 中斷</button>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="button-group">
+                        <button id="ctrlAltDelButton" disabled>Ctrl+Alt+Delete</button>
+                        <button id="fnButton" class="toggle-button" disabled>Fn</button>
+                        <button id="winButton" class="toggle-button" disabled>Win</button>
+                        <button id="ctrlButton" class="toggle-button" disabled>Ctrl</button>
+                        <button id="altButton" class="toggle-button" disabled>Alt</button>
+                        <button id="releaseAllModifiers" class="toggle-button" disabled>🔄 釋放</button>
+                        <button id="pasteText" disabled>📋 貼上</button>
+                    </div>
+                </div>
+            </div>
+        
             <div id="rightControls">
-                <span class="control-label">視訊</span>
-                <select id="videoSource"></select>
-                <select id="resolution">
-                    <option value="800x600">800x600</option>
-                    <option value="1024x768">1024x768</option>
-                    <option value="1280x720">1280x720</option>
-                    <option value="1366x768">1366x768</option>
-                    <option value="1920x1080">1920x1080</option>
-                </select>
-                <button id="connectCapture">▶️ 連接</button>
-                <button id="disconnectCapture" disabled>⏹️ 中斷</button>
-                <button id="screenshot" disabled>🖼️ 擷圖</button>
-                <button id="startRecord" disabled>🔴 錄影</button>
-                <span id="recordingTime" style="display: none;">00:00:00</span>
-                <button id="stopRecord" disabled>⬛ 停止</button>
+                <span class="header-label">視訊</span>
+                <div class="button-wrapper">
+                    <div class="button-group">
+                        <select id="videoSource"></select>
+                        <select id="resolution">
+                            <option value="1280x720">1280x720</option>
+                            <option value="1366x768">1366x768</option>
+                            <option value="1920x1080" selected>1920x1080</option>
+                        </select>
+                        <button id="connectCapture">▶️ 連接</button>
+                        <button id="disconnectCapture" disabled>⏹️ 中斷</button>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="button-group">                     
+                        <button id="screenshot" disabled>🖼️ 擷圖</button>
+                        <button id="startRecord" disabled>🔴 錄影</button>
+                        <span id="recordingTime" style="display: none;">00:00:00</span>
+                        <button id="stopRecord" disabled>⬛ 停止</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -417,12 +652,14 @@ any later version.
         let lastConsoleLogTime = 0;
         let isFnPopupVisible = false;
         let lastWheelTime = 0;
+        let sharedReader = null;
+        let isReading = true;  
 
         async function sendCtrlAltDel() {
             if (writer) {
                 try {
                     // 直接傳送特定的 Ctrl+Alt+Del 命令
-                    await writer.write(new TextEncoder().encode('CTRL_ALT_DEL\n'));
+                    await writer.write(new TextEncoder().encode('B:CTRL_ALT_DEL\n'));
                     console.log('已傳送 Ctrl+Alt+Delete 命令');
                 } catch (error) {
                     console.error('傳送 Ctrl+Alt+Delete 時發生錯誤:', error);
@@ -616,6 +853,7 @@ any later version.
             pasteTextButton.disabled = true;
         }
 
+        // 取得視訊裝置清單
         async function getVideoSources() {
             try {
                 // 先請求權限
@@ -627,23 +865,47 @@ any later version.
                     
                 // 之後再列舉設備
                 const devices = await navigator.mediaDevices.enumerateDevices();
-                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                const videoDevices = devices.filter(device => {
+                    if (device.kind === 'videoinput') {
+                        const label = device.label.toUpperCase();
+                        return (label.startsWith('USB') && 
+                            /\d\.?\s*\d/.test(label) && 
+                            (label.includes('HD') || label.includes('CAPTURE')));
+                    }
+                    return false;
+                });
 
-                videoSourceSelect.innerHTML = videoDevices.map(device => {
-                    let label = device.label || '視訊來源';
-                    label = label.replace(/\(.*?\)/g, '').trim();
-                    return `<option value="${device.deviceId}">${label}</option>`;
-                }).join('');
+                if (videoDevices.length === 0) {
+                    // 沒有符合的裝置
+                    videoSourceSelect.innerHTML = '<option value="">無對應裝置</option>';
+                    // 停用所有視訊相關按鈕
+                    connectCaptureButton.disabled = true;
+                    disconnectCaptureButton.disabled = true;
+                    screenshotButton.disabled = true;
+                    startRecordButton.disabled = true;
+                    stopRecordButton.disabled = true;
+                    resolutionSelect.disabled = true;
+                } else {
+                    videoSourceSelect.innerHTML = videoDevices.map(device => {
+                        let label = device.label || '視訊來源';
+                        label = label.replace(/\(.*?\)/g, '').trim();
+                        return `<option value="${device.deviceId}">${label}</option>`;
+                    }).join('');
 
-                const savedVideoSource = localStorage.getItem('videoSourceId');
-                const savedResolution = localStorage.getItem('resolution');
+                    // 啟用視訊連接按鈕和解析度選擇
+                    connectCaptureButton.disabled = false;
+                    resolutionSelect.disabled = false;
 
-                if (savedVideoSource && videoDevices.some(device => device.deviceId === savedVideoSource)) {
-                    videoSourceSelect.value = savedVideoSource;
-                }
+                    const savedVideoSource = localStorage.getItem('videoSourceId');
+                    const savedResolution = localStorage.getItem('resolution');
 
-                if (savedResolution) {
-                    resolutionSelect.value = savedResolution;
+                    if (savedVideoSource && videoDevices.some(device => device.deviceId === savedVideoSource)) {
+                        videoSourceSelect.value = savedVideoSource;
+                    }
+
+                    if (savedResolution) {
+                        resolutionSelect.value = savedResolution;
+                    }
                 }
             } catch (error) {
                 console.error('取得視訊來源時發生錯誤:', error);
@@ -661,104 +923,171 @@ any later version.
             const constraints = {
                 video: {
                     deviceId: { exact: selectedDeviceId },
-                    width: { exact: width },
+                    width: { exact: width },  // 保持 exact 以確保取得正確的解析度
                     height: { exact: height }
-                    }
+                }
+            };
+
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = videoStream;
+                document.getElementById('noVideoText').style.display = 'none'; 
+
+                video.onloadedmetadata = () => {
+                    connectCaptureButton.disabled = true;
+                    disconnectCaptureButton.disabled = false;
+                    screenshotButton.disabled = false;      
+                    startRecordButton.disabled = false;     
+                    stopRecordButton.disabled = true;       
+
+                    localStorage.setItem('videoSourceId', selectedDeviceId);
+                    localStorage.setItem('resolution', resolutionSelect.value);
                 };
+            } catch (error) {
+                console.error('開始視訊串流時發生錯誤:', error);
+                
+                if (error.name === 'OverconstrainedError') {
+                    // 告知用戶目前解析度不支援
+                    alert(`此裝置不支援 ${width}x${height} 解析度`);
+                    
+                    // 嘗試切換到較低的解析度
+                    const resolutions = ['1920x1080', '1366x768', '1280x720'];
+                    let foundSupportedResolution = false;
 
-                try {
-                    videoStream = await navigator.mediaDevices.getUserMedia(constraints);
-                    video.srcObject = videoStream;
-                    document.getElementById('noVideoText').style.display = 'none'; 
-
-                    video.onloadedmetadata = () => {
-                        connectCaptureButton.disabled = true;
-                        disconnectCaptureButton.disabled = false;
-                        screenshotButton.disabled = false;      
-                        startRecordButton.disabled = false;     
-                        stopRecordButton.disabled = true;       
-
-                        localStorage.setItem('videoSourceId', selectedDeviceId);
-                        localStorage.setItem('resolution', resolutionSelect.value);
-
-                    };
-                } catch (error) {
-                    console.error('開始視訊串流時發生錯誤:', error);
-                    // 顯示更友善的錯誤訊息
-                    if (error.name === 'NotAllowedError') {
-                        alert('請允許視訊權限以使用此功能');
-                    } else if (error.name === 'NotFoundError') {
-                        alert('找不到指定的視訊裝置');
-                    } else if (error.name === 'NotReadableError') {
-                        alert('無法存取視訊裝置，可能被其他程式佔用');
-                    } else {
-                        alert('視訊啟動失敗：' + error.message);
+                    for (const res of resolutions) {
+                        if (res === resolutionSelect.value) continue; // 跳過失敗的解析度
+                        
+                        resolutionSelect.value = res;
+                        const [newWidth, newHeight] = res.split('x').map(Number);
+                        
+                        try {
+                            const newConstraints = {
+                                video: {
+                                    deviceId: { exact: selectedDeviceId },
+                                    width: { exact: newWidth },
+                                    height: { exact: newHeight }
+                                }
+                            };
+                            
+                            videoStream = await navigator.mediaDevices.getUserMedia(newConstraints);
+                            video.srcObject = videoStream;
+                            document.getElementById('noVideoText').style.display = 'none';
+                            
+                            connectCaptureButton.disabled = true;
+                            disconnectCaptureButton.disabled = false;
+                            screenshotButton.disabled = false;
+                            startRecordButton.disabled = false;
+                            stopRecordButton.disabled = true;
+                            
+                            localStorage.setItem('videoSourceId', selectedDeviceId);
+                            localStorage.setItem('resolution', res);
+                            
+                            foundSupportedResolution = true;
+                            alert(`已自動切換到支援的解析度: ${res}`);
+                            break;
+                        } catch (e) {
+                            console.error(`解析度 ${res} 也不支援:`, e);
+                        }
                     }
+                    
+                    if (!foundSupportedResolution) {
+                        alert('無法找到支援的解析度，請手動選擇其他解析度試試。');
+                    }
+                } else if (error.name === 'NotAllowedError') {
+                    alert('請允許視訊權限以使用此功能');
+                } else if (error.name === 'NotFoundError') {
+                    alert('找不到指定的視訊裝置');
+                } else if (error.name === 'NotReadableError') {
+                    alert('無法存取視訊裝置，可能被其他程式佔用');
+                } else {
+                    alert('視訊啟動失敗：' + error.message);
                 }
             }
+        }
             
     
         async function connectController() {
-            
-            // 檢查是否已連接視訊
-            if (!videoStream) {
-                // 取消原本的連接動作
-                highlightConnectCapture();
-                return;
-            }
-            
             if ('serial' in navigator) {
                 try {
-                    port = await navigator.serial.requestPort();
+                    const filters = [{
+                        usbVendorId: 0x2341,
+                        usbProductId: 0x8036
+                    }];
+
+                    port = await navigator.serial.requestPort({ filters });
                     await port.open({ baudRate: 115200 });
-    
+
                     connectControllerButton.disabled = true;
                     disconnectControllerButton.disabled = false;
-    
-                    writer = port.writable.getWriter();
-    
+
                     addEventListeners();
                     overlay.focus();
-    
+
                     ctrlAltDelButton.disabled = false;
                     winButton.disabled = false;
                     ctrlButton.disabled = false;
                     altButton.disabled = false;
                     fnButton.disabled = false;
                     releaseAllModifiersButton.disabled = false;
-                    pasteTextButton.disabled = false;  
-    
+                    pasteTextButton.disabled = false;
+
                 } catch (error) {
                     console.error('連接控制器時發生錯誤:', error);
+                    
+                    // 根據錯誤類型顯示不同訊息
+                    if (error.name === 'NetworkError') {
+                        alert('無法開啟序列埠，可能被其他程式佔用中。請關閉其他使用此裝置的程式後再試。');
+                    } else {
+                        alert('連接控制器時發生錯誤: ' + error.message);
+                    }
                 }
             } else {
                 alert('您的瀏覽器不支援 Web Serial API');
             }
         }
     
+     
         async function disconnectController() {
+            
+            isReading = false;
+
+            await new Promise(resolve => setTimeout(resolve, 100));
+
             if (writer) {
                 try {
                     // 中斷前傳送 RELEASE_ALL
-                    await writer.write(new TextEncoder().encode('RELEASE_ALL\n'));
+                    await writer.write(new TextEncoder().encode('B:RELEASE_ALL\n'));
+                    writer.releaseLock();
                 } catch (error) {
                     console.error('傳送 RELEASE_ALL 命令時發生錯誤:', error);
                 }
-                writer.releaseLock();
                 writer = null;
             }
-    
-            if (port) {
-                await port.close();
-                port = null;
+
+            try {
+                if (sharedReader) {
+                    await sharedReader.cancel();
+                    if (sharedReader.locked) {
+                        sharedReader.releaseLock();
+                    }
+                    sharedReader = null;
+                }
+
+                if (port) {
+                    await port.close();
+                    port = null;
+                }
+            } catch (error) {
+                console.error('關閉連接時發生錯誤:', error);
             }
-    
+
+            // 重置所有按鈕狀態
             connectControllerButton.disabled = false;
             disconnectControllerButton.disabled = true;
-    
+
             removeEventListeners();
             await resetButtonStates();
-    
+
             ctrlAltDelButton.disabled = true;
             winButton.disabled = true;
             ctrlButton.disabled = true;
@@ -766,11 +1095,27 @@ any later version.
             fnButton.disabled = true;
             releaseAllModifiersButton.disabled = true;
             pasteTextButton.disabled = true;
-    
+
+            // 更新終端機的按鈕狀態
+            const terminalConnect = document.getElementById('terminalConnect');
+            const terminalClear = document.getElementById('terminalClear');
+            const terminalBaudRate = document.getElementById('terminalBaudRate');
+
+            if (terminalConnect) terminalConnect.disabled = false;
+            if (terminalClear) terminalClear.disabled = true;
+            if (terminalBaudRate) terminalBaudRate.disabled = false;
+
+            // 如果終端機已經打開，更新其狀態
+            if (window.term) {
+                term.writeln('Disconnected from serial port');
+            }
+
             closeFnPopup();
             lastMouseX = null;
             lastMouseY = null;
-        }
+            }
+
+
     
         function addEventListeners() {
             keyEventListener = (event) => sendKeyToArduino(event);
@@ -818,7 +1163,7 @@ any later version.
             });
 
             startPasteButton.addEventListener('click', async () => {
-                if (!writer) {
+                if (!port) {
                     alert('請先連接控制器');
                     return;
                 }
@@ -831,7 +1176,7 @@ any later version.
 
                 // 檢查是否包含中日韓文字
                 if (containsCJK(textToSend)) {
-                    if (!confirm('檢測到文字中包含中文、日文或韓文字元，這些字元將無法正確傳送。\n\n要繼續傳送嗎？（不支援的字元將被跳過）')) {
+                    if (!confirm('檢測文字中包含中文、日文或韓文字元，這些字元將無法正確傳送。\n\n要繼續傳送嗎？（不支援的字元將被跳過）')) {
                         return;
                     }
                 }
@@ -850,6 +1195,16 @@ any later version.
 
             overlay.addEventListener('mouseleave', handleMouseLeave);
     
+
+            overlay.addEventListener('keydown', (event) => {
+                // Windows 的 Ctrl + A
+                // macOS 的 Command + A (metaKey)
+                if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'a') {
+                    event.preventDefault();
+                    console.log('阻止全選事件');
+                }
+            });
+
             document.querySelectorAll('.fn-key').forEach(button => {
                 button.addEventListener('click', () => {
                     handleFnKeyPress(button.dataset.key);
@@ -867,7 +1222,7 @@ any later version.
                 // 建立提示框
                 const tooltip = document.createElement('div');
                 tooltip.className = 'tooltip';
-                tooltip.textContent = '請先連接視訊畫面，再連接控制器！';
+                tooltip.textContent = '請先連接視訊畫面，再連接控制器。';
                 
                 // 計算位置
                 const buttonRect = connectCaptureButton.getBoundingClientRect();
@@ -924,7 +1279,7 @@ any later version.
         }
 
         async function sendTextByChar() {
-            if (!isPasting || !writer) {
+            if (!isPasting || !port) {
                 resetPasteStatus();
                 return;
             }
@@ -942,64 +1297,96 @@ any later version.
 
             try {
                 const char = textToSend[currentPasteIndex];
-                const DELAY = 15; // 延遲時間
+                const DELAY = 10; // 增加延遲時間到 50ms
 
                 async function sendKeyStrokes(keystrokes) {
                     for (const stroke of keystrokes) {
-                        await writer.write(new TextEncoder().encode(stroke + '\n'));
-                        await new Promise(resolve => setTimeout(resolve, DELAY));
+                        try {
+                            await safeWrite(stroke + '\n');
+                            // 每個按鍵操作之間延遲一下
+                            await new Promise(resolve => setTimeout(resolve, DELAY));
+                        } catch (error) {
+                            console.error('傳送按鍵時發生錯誤:', error);
+                            throw error;
+                        }
                     }
                 }
 
                 function getKeyStrokes(char) {
+                    // 判斷是否需要 Shift
+                    let needShift = char >= 'A' && char <= 'Z' || "~!@#$%^&*()_+{}|:\"<>?".includes(char);
+                    
+                    let keyCode;
                     switch (char) {
-                        // 數字上方的符號
-                        case '!': return ['MOD_DOWN Shift', 'KEY_DOWN Digit1', 'KEY_UP Digit1', 'MOD_UP Shift'];
-                        case '@': return ['MOD_DOWN Shift', 'KEY_DOWN Digit2', 'KEY_UP Digit2', 'MOD_UP Shift'];
-                        case '#': return ['MOD_DOWN Shift', 'KEY_DOWN Digit3', 'KEY_UP Digit3', 'MOD_UP Shift'];
-                        case '$': return ['MOD_DOWN Shift', 'KEY_DOWN Digit4', 'KEY_UP Digit4', 'MOD_UP Shift'];
-                        case '%': return ['MOD_DOWN Shift', 'KEY_DOWN Digit5', 'KEY_UP Digit5', 'MOD_UP Shift'];
-                        case '^': return ['MOD_DOWN Shift', 'KEY_DOWN Digit6', 'KEY_UP Digit6', 'MOD_UP Shift'];
-                        case '&': return ['MOD_DOWN Shift', 'KEY_DOWN Digit7', 'KEY_UP Digit7', 'MOD_UP Shift'];
-                        case '*': return ['MOD_DOWN Shift', 'KEY_DOWN Digit8', 'KEY_UP Digit8', 'MOD_UP Shift'];
-                        case '(': return ['MOD_DOWN Shift', 'KEY_DOWN Digit9', 'KEY_UP Digit9', 'MOD_UP Shift'];
-                        case ')': return ['MOD_DOWN Shift', 'KEY_DOWN Digit0', 'KEY_UP Digit0', 'MOD_UP Shift'];
+                        // 特殊符號的對應
+                        case '!': return needShift ? ['B:MOD_DOWN Shift', 'B:KEY_DOWN Digit1', 'B:KEY_UP Digit1', 'B:MOD_UP Shift'] : null;
+                        case '@': return needShift ? ['B:MOD_DOWN Shift', 'B:KEY_DOWN Digit2', 'B:KEY_UP Digit2', 'B:MOD_UP Shift'] : null;
+                        case '#': return needShift ? ['B:MOD_DOWN Shift', 'B:KEY_DOWN Digit3', 'B:KEY_UP Digit3', 'B:MOD_UP Shift'] : null;
+                        case '$': return needShift ? ['B:MOD_DOWN Shift', 'B:KEY_DOWN Digit4', 'B:KEY_UP Digit4', 'B:MOD_UP Shift'] : null;
+                        case '%': return needShift ? ['B:MOD_DOWN Shift', 'B:KEY_DOWN Digit5', 'B:KEY_UP Digit5', 'B:MOD_UP Shift'] : null;
+                        case '^': return needShift ? ['B:MOD_DOWN Shift', 'B:KEY_DOWN Digit6', 'B:KEY_UP Digit6', 'B:MOD_UP Shift'] : null;
+                        case '&': return needShift ? ['B:MOD_DOWN Shift', 'B:KEY_DOWN Digit7', 'B:KEY_UP Digit7', 'B:MOD_UP Shift'] : null;
+                        case '*': return needShift ? ['B:MOD_DOWN Shift', 'B:KEY_DOWN Digit8', 'B:KEY_UP Digit8', 'B:MOD_UP Shift'] : null;
+                        case '(': return needShift ? ['B:MOD_DOWN Shift', 'B:KEY_DOWN Digit9', 'B:KEY_UP Digit9', 'B:MOD_UP Shift'] : null;
+                        case ')': return needShift ? ['B:MOD_DOWN Shift', 'B:KEY_DOWN Digit0', 'B:KEY_UP Digit0', 'B:MOD_UP Shift'] : null;
+                        
+                        // 標點符號
+                        case '_': return ['B:MOD_DOWN Shift', 'B:KEY_DOWN Minus', 'B:KEY_UP Minus', 'B:MOD_UP Shift'];
+                        case '+': return ['B:MOD_DOWN Shift', 'B:KEY_DOWN Equal', 'B:KEY_UP Equal', 'B:MOD_UP Shift'];
+                        case '{': return ['B:MOD_DOWN Shift', 'B:KEY_DOWN BracketLeft', 'B:KEY_UP BracketLeft', 'B:MOD_UP Shift'];
+                        case '}': return ['B:MOD_DOWN Shift', 'B:KEY_DOWN BracketRight', 'B:KEY_UP BracketRight', 'B:MOD_UP Shift'];
+                        case '|': return ['B:MOD_DOWN Shift', 'B:KEY_DOWN Backslash', 'B:KEY_UP Backslash', 'B:MOD_UP Shift'];
+                        case ':': return ['B:MOD_DOWN Shift', 'B:KEY_DOWN Semicolon', 'B:KEY_UP Semicolon', 'B:MOD_UP Shift'];
+                        case '"': return ['B:MOD_DOWN Shift', 'B:KEY_DOWN Quote', 'B:KEY_UP Quote', 'B:MOD_UP Shift'];
+                        case '<': return ['B:MOD_DOWN Shift', 'B:KEY_DOWN Comma', 'B:KEY_UP Comma', 'B:MOD_UP Shift'];
+                        case '>': return ['B:MOD_DOWN Shift', 'B:KEY_DOWN Period', 'B:KEY_UP Period', 'B:MOD_UP Shift'];
+                        case '?': return ['B:MOD_DOWN Shift', 'B:KEY_DOWN Slash', 'B:KEY_UP Slash', 'B:MOD_UP Shift'];
+                        case '~': return ['B:MOD_DOWN Shift', 'B:KEY_DOWN Backquote', 'B:KEY_UP Backquote', 'B:MOD_UP Shift'];
 
-                        // 符號鍵
-                        case '_': return ['MOD_DOWN Shift', 'KEY_DOWN Minus', 'KEY_UP Minus', 'MOD_UP Shift'];
-                        case '+': return ['MOD_DOWN Shift', 'KEY_DOWN Equal', 'KEY_UP Equal', 'MOD_UP Shift'];
-                        case '{': return ['MOD_DOWN Shift', 'KEY_DOWN BracketLeft', 'KEY_UP BracketLeft', 'MOD_UP Shift'];
-                        case '}': return ['MOD_DOWN Shift', 'KEY_DOWN BracketRight', 'KEY_UP BracketRight', 'MOD_UP Shift'];
-                        case '|': return ['MOD_DOWN Shift', 'KEY_DOWN Backslash', 'KEY_UP Backslash', 'MOD_UP Shift'];
-                        case ':': return ['MOD_DOWN Shift', 'KEY_DOWN Semicolon', 'KEY_UP Semicolon', 'MOD_UP Shift'];
-                        case '"': return ['MOD_DOWN Shift', 'KEY_DOWN Quote', 'KEY_UP Quote', 'MOD_UP Shift'];
-                        case '<': return ['MOD_DOWN Shift', 'KEY_DOWN Comma', 'KEY_UP Comma', 'MOD_UP Shift'];
-                        case '>': return ['MOD_DOWN Shift', 'KEY_DOWN Period', 'KEY_UP Period', 'MOD_UP Shift'];
-                        case '?': return ['MOD_DOWN Shift', 'KEY_DOWN Slash', 'KEY_UP Slash', 'MOD_UP Shift'];
-                        case '~': return ['MOD_DOWN Shift', 'KEY_DOWN Backquote', 'KEY_UP Backquote', 'MOD_UP Shift'];
+                        // 基本符號
+                        case '-': return ['B:KEY_DOWN Minus', 'B:KEY_UP Minus'];
+                        case '=': return ['B:KEY_DOWN Equal', 'B:KEY_UP Equal'];
+                        case '[': return ['B:KEY_DOWN BracketLeft', 'B:KEY_UP BracketLeft'];
+                        case ']': return ['B:KEY_DOWN BracketRight', 'B:KEY_UP BracketRight'];
+                        case '\\': return ['B:KEY_DOWN Backslash', 'B:KEY_UP Backslash'];
+                        case ';': return ['B:KEY_DOWN Semicolon', 'B:KEY_UP Semicolon'];
+                        case "'": return ['B:KEY_DOWN Quote', 'B:KEY_UP Quote'];
+                        case ',': return ['B:KEY_DOWN Comma', 'B:KEY_UP Comma'];
+                        case '.': return ['B:KEY_DOWN Period', 'B:KEY_UP Period'];
+                        case '/': return ['B:KEY_DOWN Slash', 'B:KEY_UP Slash'];
+                        case '`': return ['B:KEY_DOWN Backquote', 'B:KEY_UP Backquote'];
+                        case ' ': return ['B:KEY_DOWN Space', 'B:KEY_UP Space'];
 
-                        // 換行和一般按鍵
+                        // 換行處理
                         case '\n':
                         case '\r':
-                            return ['KEY_DOWN Enter', 'KEY_UP Enter'];
+                            return ['B:KEY_DOWN Enter', 'B:KEY_UP Enter'];
 
                         default:
                             if (char >= 'A' && char <= 'Z') {
                                 return [
-                                    'MOD_DOWN Shift',
-                                    `KEY_DOWN Key${char}`,
-                                    `KEY_UP Key${char}`,
-                                    'MOD_UP Shift'
+                                    'B:MOD_DOWN Shift',
+                                    `B:KEY_DOWN Key${char}`,
+                                    `B:KEY_UP Key${char}`,
+                                    'B:MOD_UP Shift'
                                 ];
-                            } else {
-                                const keyCode = keyboardMap[char];
-                                return keyCode ? [`KEY_DOWN ${keyCode}`, `KEY_UP ${keyCode}`] : [];
+                            } else if (char >= 'a' && char <= 'z') {
+                                return [
+                                    `B:KEY_DOWN Key${char.toUpperCase()}`,
+                                    `B:KEY_UP Key${char.toUpperCase()}`
+                                ];
+                            } else if (char >= '0' && char <= '9') {
+                                return [
+                                    `B:KEY_DOWN Digit${char}`,
+                                    `B:KEY_UP Digit${char}`
+                                ];
                             }
+                            return null;
                     }
                 }
 
                 const keyStrokes = getKeyStrokes(char);
-                if (keyStrokes.length > 0) {
+                if (keyStrokes) {
                     await sendKeyStrokes(keyStrokes);
                 }
 
@@ -1015,13 +1402,13 @@ any later version.
                 alert('傳送文字時發生錯誤，請重試');
             }
         }
-   
 
+   
         async function handleMouseWheel(event) {
-            if (writer) {
+            if (port) {
                 const now = Date.now();
                 if (now - lastWheelTime < WHEEL_DELAY) {
-                    return; // 如果距離上次捲動時間太近，忽略
+                    return;
                 }
                 lastWheelTime = now;
 
@@ -1029,8 +1416,8 @@ any later version.
                 const scrollAmount = -Math.sign(event.deltaY);
                 
                 try {
-                    const data = `MOUSE_SCROLL ${scrollAmount}\n`;
-                    await writer.write(new TextEncoder().encode(data));
+                    const data = `B:MOUSE_SCROLL ${scrollAmount}\n`;
+                    await safeWrite(data);
                 } catch (error) {
                     console.error('傳送滑鼠滾輪事件時發生錯誤:', error);
                 }
@@ -1038,34 +1425,34 @@ any later version.
         }
 
         async function sendKeyToArduino(event) {
-            if (writer) {
+            if (port) {
                 overlay.focus();
-    
+
                 const type = event.type === 'keydown' ? 'KEY_DOWN' : 'KEY_UP';
                 const key = event.code;
-    
+
                 if (type === 'KEY_DOWN') {
                     pressedKeys.add(key);
                 } else {
                     pressedKeys.delete(key);
                 }
-    
+
                 if (modifierKeys[key]) {
                     const modifier = modifierKeys[key];
                     const modType = event.type === 'keydown' ? 'MOD_DOWN' : 'MOD_UP';
-                    const data = `${modType} ${modifier}\n`;
-    
+                    const data = `B:${modType} ${modifier}\n`;
+
                     try {
-                        await writer.write(new TextEncoder().encode(data));
+                        await safeWrite(data);
                         console.log(`已傳送修飾鍵：${data.trim()}`);
                     } catch (error) {
                         console.error('傳送修飾鍵時發生錯誤:', error);
                     }
                 } else {
-                    const data = `${type} ${key}\n`;
-    
+                    const data = `B:${type} ${key}\n`;
+
                     try {
-                        await writer.write(new TextEncoder().encode(data));
+                        await safeWrite(data);
                         console.log(`已傳送按鍵：${data.trim()}`);
                     } catch (error) {
                         console.error('傳送按鍵時發生錯誤:', error);
@@ -1076,10 +1463,10 @@ any later version.
     
         async function handleVisibilityChange() {
             if (document.hidden || document.visibilityState === 'hidden') {
-                if (writer) {
+                if (port) {
                     try {
                         // 傳送 RELEASE_ALL 命令到 Arduino
-                        await writer.write(new TextEncoder().encode('RELEASE_ALL\n'));
+                        await safeWrite('B:RELEASE_ALL\n');
                         console.log('已傳送 RELEASE_ALL 命令');
                         await releaseAllKeys();
                     } catch (error) {
@@ -1090,14 +1477,14 @@ any later version.
         }
     
         async function sendMouseMovementToArduino(event) {
-            if (writer) {
+            if (port) {
                 const rect = video.getBoundingClientRect();
                 const videoAspectRatio = video.videoWidth / video.videoHeight;
                 const elementAspectRatio = rect.width / rect.height;
-    
+
                 let videoDisplayWidth, videoDisplayHeight;
                 let offsetX, offsetY;
-    
+
                 if (videoAspectRatio > elementAspectRatio) {
                     videoDisplayWidth = rect.width;
                     videoDisplayHeight = rect.width / videoAspectRatio;
@@ -1109,29 +1496,29 @@ any later version.
                     offsetX = rect.left + (rect.width - videoDisplayWidth) / 2;
                     offsetY = rect.top;
                 }
-    
+
                 const mouseX = (event.clientX - offsetX);
                 const mouseY = (event.clientY - offsetY);
-    
+
                 if (mouseX >= 0 && mouseX <= videoDisplayWidth && mouseY >= 0 && mouseY <= videoDisplayHeight) {
                     const relativeX = mouseX / videoDisplayWidth;
                     const relativeY = mouseY / videoDisplayHeight;
-    
+
                     const absoluteX = Math.round((relativeX * 2 - 1) * 32767);
                     const absoluteY = Math.round((relativeY * 2 - 1) * 32767);
-    
+
                     const currentTime = Date.now();
-    
+
                     if (currentTime - lastConsoleLogTime >= 1000) {
                         console.log(`計算後的絕對座標：X=${absoluteX}, Y=${absoluteY}`);
                         lastConsoleLogTime = currentTime;
                     }
-    
+
                     if (lastMouseX !== absoluteX || lastMouseY !== absoluteY) {
-                        const data = `MOUSE_MOVE_TO ${absoluteX} ${absoluteY}\n`;
-    
+                        const data = `B:MOUSE_MOVE_TO ${absoluteX} ${absoluteY}\n`;
+
                         try {
-                            await writer.write(new TextEncoder().encode(data));
+                            await safeWrite(data);
                             lastMouseX = absoluteX;
                             lastMouseY = absoluteY;
                         } catch (error) {
@@ -1143,18 +1530,18 @@ any later version.
         }
     
         async function sendMouseClickToArduino(event) {
-            if (writer) {
+            if (port) {
                 event.preventDefault();
                 const type = event.type === 'mousedown' ? 'MOUSE_DOWN' : 'MOUSE_UP';
                 let button = '';
                 if (event.button === 0) button = 'LEFT';
                 else if (event.button === 1) button = 'MIDDLE';
                 else if (event.button === 2) button = 'RIGHT';
-    
-                const data = `${type} ${button}\n`;
-    
+
+                const data = `B:${type} ${button}\n`;
+
                 try {
-                    await writer.write(new TextEncoder().encode(data));
+                    await safeWrite(data);
                     console.log(`已傳送滑鼠點擊：${data.trim()}`);
                 } catch (error) {
                     console.error('傳送滑鼠點擊時發生錯誤:', error);
@@ -1168,15 +1555,15 @@ any later version.
         }
     
         async function sendCtrlAltDel() {
-            if (writer) {
+            if (port) {
                 try {
-                    await writer.write(new TextEncoder().encode('KEY_DOWN Control\n'));
-                    await writer.write(new TextEncoder().encode('KEY_DOWN Alt\n'));
-                    await writer.write(new TextEncoder().encode('KEY_DOWN Delete\n'));
+                    await safeWrite('B:KEY_DOWN Control\n');
+                    await safeWrite('B:KEY_DOWN Alt\n');
+                    await safeWrite('B:KEY_DOWN Delete\n');
                     await new Promise(resolve => setTimeout(resolve, 100));
-                    await writer.write(new TextEncoder().encode('KEY_UP Delete\n'));
-                    await writer.write(new TextEncoder().encode('KEY_UP Alt\n'));
-                    await writer.write(new TextEncoder().encode('KEY_UP Control\n'));
+                    await safeWrite('B:KEY_UP Delete\n');
+                    await safeWrite('B:KEY_UP Alt\n');
+                    await safeWrite('B:KEY_UP Control\n');
                     console.log('已傳送 Ctrl+Alt+Delete');
                 } catch (error) {
                     console.error('傳送 Ctrl+Alt+Delete 時發生錯誤:', error);
@@ -1185,11 +1572,10 @@ any later version.
         }
     
         async function toggleWinKey() {
-            if (writer) {
+            if (port) {
                 if (pressedModifiers.has('Meta')) {
-                    const data = 'KEY_UP Meta\n';
                     try {
-                        await writer.write(new TextEncoder().encode(data));
+                        await safeWrite('B:KEY_UP Meta\n');
                         console.log('已釋放 Win 鍵');
                         pressedModifiers.delete('Meta');
                         winButton.classList.remove('active');
@@ -1197,9 +1583,8 @@ any later version.
                         console.error('釋放 Win 鍵時發生錯誤:', error);
                     }
                 } else {
-                    const data = 'KEY_DOWN Meta\n';
                     try {
-                        await writer.write(new TextEncoder().encode(data));
+                        await safeWrite('B:KEY_DOWN Meta\n');
                         console.log('已按下 Win 鍵');
                         pressedModifiers.add('Meta');
                         winButton.classList.add('active');
@@ -1211,11 +1596,10 @@ any later version.
         }
 
         async function toggleCtrlKey() {
-            if (writer) {
+            if (port) {
                 if (pressedModifiers.has('Control')) {
-                    const data = 'KEY_UP Control\n';
                     try {
-                        await writer.write(new TextEncoder().encode(data));
+                        await safeWrite('B:KEY_UP Control\n');
                         console.log('已釋放 Ctrl 鍵');
                         pressedModifiers.delete('Control');
                         ctrlButton.classList.remove('active');
@@ -1223,9 +1607,8 @@ any later version.
                         console.error('釋放 Ctrl 鍵時發生錯誤:', error);
                     }
                 } else {
-                    const data = 'KEY_DOWN Control\n';
                     try {
-                        await writer.write(new TextEncoder().encode(data));
+                        await safeWrite('B:KEY_DOWN Control\n');
                         console.log('已按下 Ctrl 鍵');
                         pressedModifiers.add('Control');
                         ctrlButton.classList.add('active');
@@ -1237,11 +1620,10 @@ any later version.
         }
 
         async function toggleAltKey() {
-            if (writer) {
+            if (port) {
                 if (pressedModifiers.has('Alt')) {
-                    const data = 'KEY_UP Alt\n';
                     try {
-                        await writer.write(new TextEncoder().encode(data));
+                        await safeWrite('B:KEY_UP Alt\n');
                         console.log('已釋放 Alt 鍵');
                         pressedModifiers.delete('Alt');
                         altButton.classList.remove('active');
@@ -1249,9 +1631,8 @@ any later version.
                         console.error('釋放 Alt 鍵時發生錯誤:', error);
                     }
                 } else {
-                    const data = 'KEY_DOWN Alt\n';
                     try {
-                        await writer.write(new TextEncoder().encode(data));
+                        await safeWrite('B:KEY_DOWN Alt\n');
                         console.log('已按下 Alt 鍵');
                         pressedModifiers.add('Alt');
                         altButton.classList.add('active');
@@ -1286,11 +1667,11 @@ any later version.
         }
 
         async function handleFnKeyPress(key) {
-            if (writer) {
+            if (port) {
                 try {
-                    await writer.write(new TextEncoder().encode(`KEY_DOWN ${key}\n`));
+                    await safeWrite(`B:KEY_DOWN ${key}\n`);
                     await new Promise(resolve => setTimeout(resolve, 50));
-                    await writer.write(new TextEncoder().encode(`KEY_UP ${key}\n`));
+                    await safeWrite(`B:KEY_UP ${key}\n`);
                     console.log(`已傳送功能鍵：${key}`);
                 } catch (error) {
                     console.error(`傳送功能鍵 ${key} 時發生錯誤:`, error);
@@ -1305,11 +1686,55 @@ any later version.
             fnButton.classList.remove('active');
         }
 
+        // 視窗拖曳功能
+        function makeWindowDraggable(windowElement, headerElement) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            
+            headerElement.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e.preventDefault();
+                
+                const windowRect = windowElement.getBoundingClientRect();
+                const containerRect = document.getElementById('videoContainer').getBoundingClientRect();
+                const headerHeight = document.getElementById('terminalHeader').offsetHeight;
+
+                // 計算新位置
+                const newLeft = windowElement.offsetLeft + e.clientX - pos3;
+                const newTop = windowElement.offsetTop + e.clientY - pos4;
+
+                // 設定邊界限制
+                const maxLeft = containerRect.width - windowRect.width;
+
+                // 修正下邊界計算，減去標題欄高度
+                const maxTop = containerRect.height - windowRect.height + headerHeight;
+
+                // 限制在視窗容器內
+                windowElement.style.left = `${Math.min(Math.max(0, newLeft), maxLeft)}px`;
+                windowElement.style.top = `${Math.min(Math.max(0, newTop), maxTop)}px`;
+
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
         async function releaseAllModifiers() {
-            if (writer) {
+            if (port) {
                 try {
-                    // 傳送 RELEASE_ALL 命令
-                    await writer.write(new TextEncoder().encode('RELEASE_ALL\n'));
+                    await safeWrite('B:RELEASE_ALL\n');
                     console.log('已傳送 RELEASE_ALL 命令');
                     pressedModifiers.clear();
                     winButton.classList.remove('active');
@@ -1322,10 +1747,9 @@ any later version.
         }
 
         async function releaseAllKeys() {
-            if (writer) {
+            if (port) {
                 try {
-                    // 傳送 RELEASE_ALL 命令
-                    await writer.write(new TextEncoder().encode('RELEASE_ALL\n'));
+                    await safeWrite('B:RELEASE_ALL\n');
                     console.log('已傳送 RELEASE_ALL 命令');
 
                     pressedKeys.clear();
@@ -1351,6 +1775,298 @@ any later version.
                 }
             }
         }
+
+       
+        function updateTerminalButtonStates(isConnected) {
+            const terminalConnect = document.getElementById('terminalConnect');
+            const terminalClear = document.getElementById('terminalClear');
+            const terminalDownload = document.getElementById('terminalDownload');
+            const terminalBaudRate = document.getElementById('terminalBaudRate');
+
+            if (terminalConnect) terminalConnect.disabled = isConnected;
+            if (terminalClear) terminalClear.disabled = !isConnected;
+            if (terminalDownload) terminalDownload.disabled = !isConnected;
+            //if (terminalBaudRate) terminalBaudRate.disabled = isConnected;
+        }
+
+        function updateMainControllerButtons(isConnected) {
+            const connectController = document.getElementById('connectController');
+            const disconnectController = document.getElementById('disconnectController');
+
+            if (connectController) connectController.disabled = isConnected;
+            if (disconnectController) disconnectController.disabled = !isConnected;
+        }
+
+        function setupTerminalEventListeners() {
+            // 監聽速率變更
+            const baudRateSelect = document.getElementById('terminalBaudRate');
+            if (baudRateSelect) {
+                baudRateSelect.addEventListener('change', async (e) => {
+                    if (port) {
+                        const baudRate = parseInt(e.target.value);
+                        try {
+                            await safeWrite(`R:BAUD=${baudRate}\n`);
+                            if (window.term) {
+                                term.writeln(`RS232 baud rate changed to ${baudRate}`);
+                            }
+                        } catch (error) {
+                            console.error('變更速率時發生錯誤:', error);
+                            if (window.term) {
+                                term.writeln(`Failed to change baud rate: ${error.message}`);
+                            }
+                        }
+                    }
+                });
+            }
+            
+            const terminalClear = document.getElementById('terminalClear');
+            if (terminalClear) {
+                terminalClear.addEventListener('click', () => {
+                    if (window.term) {
+                        window.term.clear();
+                    }
+                });
+            }
+        }
+    
+      
+        // 釋放 Writer 的輔助函數
+        async function releaseWriter() {
+            if (writer) {
+                try {
+                    await writer.close();
+                    writer.releaseLock();
+                } catch (error) {
+                    console.error('釋放 writer 時發生錯誤:', error);
+                }
+                writer = null;
+            }
+        }
+
+        async function safeWrite(data) {
+            if (!port) return;
+            
+            let tempWriter = null;
+            try {
+                if (writer) {
+                    writer.releaseLock();
+                    writer = null;
+                }
+                tempWriter = port.writable.getWriter();
+                await tempWriter.write(new TextEncoder().encode(data));
+            } catch (error) {
+                console.error('寫入資料時發生錯誤:', error);
+            } finally {
+                if (tempWriter) {
+                    try {
+                        tempWriter.releaseLock();
+                    } catch (error) {
+                        console.error('釋放 writer 時發生錯誤:', error);
+                    }
+                }
+            }
+        }
+
+      
+        function initializeTerminal() {
+            // 建立終端機個體
+            window.term = new Terminal({
+                cursorBlink: true,
+                cursorStyle: 'block',
+                fontSize: 14,
+                fontFamily: 'monospace',
+                theme: {
+                    background: '#000',
+                    foreground: '#00ff00'
+                }
+            });
+
+            const fitAddon = new FitAddon.FitAddon();
+            term.loadAddon(fitAddon);
+            term.open(document.getElementById('terminal-container'));
+            fitAddon.fit();
+
+            // 處理終端機輸入，確保所有輸入都加上 R: 前置
+            term.onData(async data => {
+                if (!port) return;
+                if (data === '\r') {
+                    // 換行特別處理，確保跨平台相容性
+                    await safeWrite('R:\r\n');
+                } else {
+                    // 一般字元都加上 R: 前置
+                    await safeWrite('R:' + data);
+                }
+            });
+
+            // 初始連線狀態檢查
+            if (port) {
+                updateTerminalButtonStates(true);
+                // 如果已經有連接，設定 RS232 的速率並設置共享 reader
+                const baudRate = parseInt(document.getElementById('terminalBaudRate').value);
+                safeWrite(`R:BAUD=${baudRate}\n`);
+                setupSharedReader();
+                term.writeln(`Terminal initialized (RS232 Rate: ${baudRate})`);
+            } else {
+                term.writeln('Terminal initialized (Not connected)');
+            }
+
+            document.getElementById('terminalConnect').addEventListener('click', async () => {
+                if (!port) {
+                    try {
+                        const filters = [{
+                            usbVendorId: 0x2341,
+                            usbProductId: 0x8036
+                        }];
+                        
+                        const baudRate = parseInt(document.getElementById('terminalBaudRate').value);
+                        port = await navigator.serial.requestPort({ filters });
+                        await port.open({ baudRate: 115200 });
+                        
+                        await safeWrite(`R:BAUD=${baudRate}\n`);
+                        setupSharedReader();
+                        term.writeln(`Connected to serial port (RS232 Rate: ${baudRate})`);
+                        updateTerminalButtonStates(true);
+                        addEventListeners();
+                        enableMainControls();
+
+                    } catch (error) {
+                        console.error('Terminal connection error:', error);
+                        term.writeln(`Error: ${error.message}`);
+                        
+                        if (error.name === 'NetworkError') {
+                            alert('無法開啟序列埠，可能被其他程式佔用中。請關閉其他使用此裝置的程式後再試。');
+                        } else {
+                            alert('連接控制器時發生錯誤: ' + error.message);
+                        }
+                    }
+                } else {
+                    const baudRate = parseInt(document.getElementById('terminalBaudRate').value);
+                    await safeWrite(`R:BAUD=${baudRate}\n`);
+                    setupSharedReader();
+                    term.writeln(`RS232 baud rate set to ${baudRate}`);
+                }
+            });
+
+            // 下載記錄按鈕事件
+            document.getElementById('terminalDownload').addEventListener('click', () => {
+                if (window.term) {
+                    const content = getAllTerminalContent();
+                    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `terminal_log_${new Date().toISOString().replace(/[:.]/g, '-')}.txt`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+            });
+
+
+            // 設置其他事件監聽器
+            setupTerminalEventListeners();
+          
+
+            // 視窗大小改變時調整終端機大小
+            const resizeObserver = new ResizeObserver(() => {
+                fitAddon.fit();
+                window.term.refresh(0, window.term.rows - 1);
+            });
+            resizeObserver.observe(document.getElementById('terminal-container'));
+        }
+
+
+
+        // Serial 資料讀取
+        async function readLoop() {
+            while (true) {
+                try {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+                    term.write(new TextDecoder().decode(value));
+                } catch (err) {
+                    console.error('讀取資料時發生錯誤:', err);
+                    break;
+                }
+            }
+        }
+
+
+        function enableMainControls() {
+            connectControllerButton.disabled = true;
+            disconnectControllerButton.disabled = false;
+            ctrlAltDelButton.disabled = false;
+            winButton.disabled = false;
+            ctrlButton.disabled = false;
+            altButton.disabled = false;
+            fnButton.disabled = false;
+            releaseAllModifiersButton.disabled = false;
+            pasteTextButton.disabled = false;
+        }
+
+        
+        function updateTerminalButtons() {
+            if (document.getElementById('terminalConnect')) {
+                document.getElementById('terminalConnect').disabled = false;
+                document.getElementById('terminalResend').disabled = true;
+                document.getElementById('terminalClear').disabled = true;
+                document.getElementById('terminalBaudRate').disabled = false;
+            }
+        }
+
+
+        function getAllTerminalContent() {
+            const buffer = term.buffer.active;
+            let content = '';
+            for (let i = 0; i < buffer.length; i++) {
+                const line = buffer.getLine(i);
+                if (line) {
+                    content += line.translateToString() + '\n';
+                }
+            }
+            return content;
+        }
+
+        function setupSharedReader() {
+            if (!port || !port.readable) return;
+
+            const decoder = new TextDecoder();
+            isReading = true; 
+
+            async function readUntilClosed() {
+                try {
+                    sharedReader = port.readable.getReader();
+                    while (isReading) {  
+                        const { value, done } = await sharedReader.read();
+                        if (done) break;
+                        if (window.term) {
+                            window.term.write(decoder.decode(value));
+                        }
+                    }
+                } catch (error) {
+                    if (isReading) {  /
+                        console.error('讀取錯誤:', error);
+                    }
+                } finally {
+                    if (sharedReader) {
+                        try {
+                            sharedReader.releaseLock();
+                        } catch (error) {
+                            console.error('釋放 reader 時發生錯誤:', error);
+                        }
+                        sharedReader = null;
+                    }
+                }
+            }
+
+            readUntilClosed().catch(error => {
+                if (isReading) {
+                    console.error('Reader loop error:', error);
+                }
+            });
+        }
+
 
         connectControllerButton.addEventListener('click', connectController);
         disconnectControllerButton.addEventListener('click', disconnectController);
@@ -1438,6 +2154,11 @@ any later version.
             }
         });
 
+
+
+
+  
+
         document.addEventListener('visibilitychange', handleVisibilityChange);
         window.addEventListener('blur', handleVisibilityChange);
 
@@ -1470,6 +2191,55 @@ any later version.
         // 在頁面載入時顯示文字
         window.addEventListener('load', () => {
             document.getElementById('noVideoText').style.display = 'block';
+                    
+            // 終端機按鈕事件
+            document.getElementById('showTerminal').addEventListener('click', () => {
+                    const terminalWindow = document.getElementById('terminalWindow');
+                    terminalWindow.style.display = 'block';
+                    
+                    // 初始化終端機（如果還沒有的話）
+                    if (!window.term) {
+                        initializeTerminal();
+                    }
+
+                    // 檢查目前連接狀態，更新按鈕
+                    if (port) {
+                        updateTerminalButtonStates(true);
+                        // 確保速率選項可用
+                        const terminalBaudRate = document.getElementById('terminalBaudRate');
+                        if (terminalBaudRate) {
+                            terminalBaudRate.disabled = false;
+                        }
+                    }
+                });
+
+                document.getElementById('minimizeTerminal').addEventListener('click', () => {
+                    const terminalWindow = document.getElementById('terminalWindow');
+                    const terminalContent = document.getElementById('terminalContent');
+                    
+                    if (terminalContent.style.display !== 'none') {
+                        // 最小化
+                        terminalContent.style.display = 'none';
+                        terminalWindow.style.height = '36px';  // 只保留標題欄高度
+                        terminalWindow.style.resize = 'none';
+                    } else {
+                        // 還原
+                        terminalContent.style.display = 'flex';
+                        terminalWindow.style.height = '400px';  // 還原預設高度
+                        terminalWindow.style.resize = 'both';
+                    }
+                });
+
+                document.getElementById('closeTerminal').addEventListener('click', () => {
+                    document.getElementById('terminalWindow').style.display = 'none';
+                });
+
+                // 初始化拖曳功能
+                makeWindowDraggable(
+                    document.getElementById('terminalWindow'),
+                    document.getElementById('terminalHeader')
+                );
+
         });
 
         window.addEventListener('load', async () => {
@@ -1497,6 +2267,19 @@ any later version.
             overlay.addEventListener('mousedown', checkControllerAndHighlight);
             overlay.addEventListener('contextmenu', checkControllerAndHighlight);
 
+            document.getElementById('videoContainer').addEventListener('keydown', (event) => {
+                if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'a') {
+                    event.preventDefault();
+                }
+            });
+
+            video.addEventListener('keydown', (event) => {
+                if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'a') {
+                    event.preventDefault();
+                }
+            });
+
+
             video.addEventListener('loadedmetadata', () => {
                 console.log('視訊中繼資料已載入');
             });
@@ -1504,6 +2287,36 @@ any later version.
 
 
     </script>
+
+
+    <div id="terminalWindow" style="display: none;">
+        <div id="terminalHeader">
+            <div class="header-title">
+                <span class="header-icon">🖥️</span>
+                <span>序列終端機</span>
+            </div>
+            <div class="terminal-controls">
+                <button id="minimizeTerminal">─</button>
+                <button id="closeTerminal">×</button>
+            </div>
+        </div>
+        <div id="terminalContent">
+            <div class="button-group">
+                <span class="terminal-label">速率</span>
+                <select id="terminalBaudRate">
+                    <option value="9600">9600</option>
+                    <option value="19200">19200</option>
+                    <option value="38400">38400</option>
+                    <option value="57600">57600</option>
+                    <option value="115200">115200</option>
+                </select>
+                <button id="terminalConnect">🔌 連接控制器</button>
+                <button id="terminalClear" hidden>🧹 清除畫面</button>
+                <button id="terminalDownload">⬇️ 下載記錄</button>
+            </div>
+            <div id="terminal-container"></div>
+        </div>
+    </div>
 
 </body>
 </html>

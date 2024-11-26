@@ -74,20 +74,20 @@
 ## 實例
 
 
-連接控制 Windows 主機擷圖
+連接控制 Windows 主機擷圖 (v1.3)
 
-![控制 Windows 主機擷圖](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/4%20windows.png)
+![控制 Windows 主機擷圖](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/windows_1.png)
 
-連接控制 Linux 主機擷圖
+連接控制 Linux 主機擷圖 (v1.0
 
 ![控制 Linux 主機擷圖](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/screenshot/3%20linux.png)
 
-連接控制 Linux 主機錄影
+連接控制 Linux 主機錄影 (v1.0
 
 ![控制 Linux 主機錄影](https://github.com/jasoncheng7115/JTUSBKVM/blob/main/screenshot/6%20linux_ok_cut.gif?raw=true)
 
 
-連接控制 Windows 主機錄影
+連接控制 Windows 主機錄影 (v1.0
 
 ![控制 Windows 主機錄影](https://github.com/jasoncheng7115/JTUSBKVM/blob/main/screenshot/5%20windows_ok_cut.gif?raw=true)
 

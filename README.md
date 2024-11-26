@@ -23,9 +23,9 @@
 ### 硬體功能
 * 一條 USB C 線接至控制端電腦 (搭配 TYPE A 轉接頭)
 * 一條 USB A 及 HDMI 線接至被控端電腦 (搭配 VGA 轉接頭)
-* 顯示訊號輸入 (BIOS 等級)，可輸入 1080P (4K 應該也可以收，沒測過)
+* 顯示訊號輸入 (BIOS 等級)，可輸入 1920x1080 (最高可能支援 4K，未測)
 * 鍵盤、滑鼠操作
-* 一條 RJ45 插座，可連接 RJ45 網路線至網路設備 Console 連接埠 (開發中)
+* 一條 RJ45 終端機控制線，可連接至網路設備 RJ45 Console 連接埠
 
 ### 軟體功能
 * 被控端畫面顯示
@@ -33,8 +33,8 @@
 * 支援功能鍵、特殊鍵與修飾鍵
 * 支援貼上功能，可一次送出一批指令 (僅限英文、數字、符號，中日韓文等無法送出)
 * 具擷圖、錄影功能
-* 支援 Windows、Linux、macOS，搭配 Chrome 或 Edge 瀏覽器
-* 網路設備 Console 連線設定終端機 (開發中)
+* 支援 Windows、Linux、macOS，搭配 Chrome、Chromium 或 Edge 瀏覽器
+* 網路設備 Console 連線設定終端機
   
 ---
 
@@ -47,14 +47,16 @@
 
 ### 硬體組成
 * Arduino Pro Micro 開發板 x 2
+* SP3232 RS232 轉接板 x 1
 * HDMI 影像擷取器 x 1 
 * VGA to HDMI 轉接頭 x 1
 * Type C USB Hub x 1
 * Type C 延長線 1M x 1
 * HDMI 0.3M 線材 x 1
+* DB9 to RJ45 轉接線 x 1
 * MicroUSB to TypeA 0.3M 線材 x 2
 * 透明收納盒 x 1
-* 全都在蝦皮購入，成本合計大約 一千一
+* 全都在蝦皮購入，成本合計大約 一千二
 
 ### 軟體組成
 * 控制端與被控端免安裝任何軟體

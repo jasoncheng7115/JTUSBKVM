@@ -145,7 +145,7 @@
 1. 至本專案的 web/ 資料夾手動下載 start_kvm.bat (Windows 用)、server.py
 2. 至本專案的 web/ 資料夾手動下載 start_kvm.sh (Linux/macOS 用)、server.py
 
-依據作業系統，執行對應的 start_kvm.bat 或 start.kvm.sh 即可啟動，並於完成後自動呼叫瀏覽器開啟 JTUSBKVM 使用介面。
+依據作業系統，執行對應的 start_kvm.bat 或 start.kvm.sh 即可啟動，過程中會引導需要安裝 Python 與 OpenSSL，並於完成後自動呼叫瀏覽器開啟 JTUSBKVM 使用介面。
 
 
 ```

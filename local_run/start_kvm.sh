@@ -1,5 +1,23 @@
-# macOS/Linux版本 (start.sh):
 #!/bin/bash
+
+# =========================================================================
+#
+# JTUSBKVM - Web Console Loader (for macOS/Linux)
+#
+# Version: 1.1.0
+# Last Update: 2024-11-26
+#
+# Author: Jason Cheng
+# E-mail: jason@jason.tools
+# GitHub: https://github.com/jasoncheng7115
+#
+# License: GNU Affero General Public License v3.0
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# =========================================================================
 
 # 設定正確的文字編碼
 export LANG=en_US.UTF-8
@@ -45,7 +63,7 @@ PYTHON_MINOR=$(echo $PYTHON_VERSION | cut -d. -f2)
 
 if [ $PYTHON_MAJOR -lt 3 ] || ([ $PYTHON_MAJOR -eq 3 ] && [ $PYTHON_MINOR -lt 6 ]); then
     echo "Python 版本過舊！"
-    echo "當前版本：$PYTHON_VERSION"
+    echo "目前版本：$PYTHON_VERSION"
     echo "需要 Python 3.6 或更新版本"
     echo ""
     echo "請更新您的 Python 版本"
@@ -54,8 +72,48 @@ if [ $PYTHON_MAJOR -lt 3 ] || ([ $PYTHON_MAJOR -eq 3 ] && [ $PYTHON_MINOR -lt 6 
     exit 1
 fi
 
+# 檢查並安裝 requests 模組
+echo "檢查必要的 Python 模組..."
+if ! $PYTHON_CMD -c "import requests" >/dev/null 2>&1; then
+    echo "未安裝 requests 模組，正在安裝..."
+    
+    # 建立並使用虛擬環境
+    if [ ! -d "venv" ]; then
+        echo "建立虛擬環境..."
+        $PYTHON_CMD -m venv venv
+    fi
+    
+    # 啟動虛擬環境
+    if [[ "$OSTYPE" == "darwin"* ]] || [[ "$OSTYPE" == "linux"* ]]; then
+        source venv/bin/activate
+    else
+        source venv/Scripts/activate
+    fi
+    
+    # 安裝 requests
+    pip install requests
+    
+    if [ $? -ne 0 ]; then
+        echo "安裝 requests 模組失敗！"
+        echo "請手動執行以下命令："
+        echo "python3 -m pip install requests"
+        read -p "按 Enter 鍵結束..."
+        exit 1
+    fi
+    echo "requests 模組安裝完成"
+fi
+
 # 確保腳本有執行權限
 chmod +x "$0"
+
+# 如果存在虛擬環境就使用它
+if [ -d "venv" ]; then
+    if [[ "$OSTYPE" == "darwin"* ]] || [[ "$OSTYPE" == "linux"* ]]; then
+        source venv/bin/activate
+    else
+        source venv/Scripts/activate
+    fi
+fi
 
 # 執行伺服器
 $PYTHON_CMD server.py

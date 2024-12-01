@@ -114,14 +114,50 @@
 
 ---
 
+## 執行方式
+
+### 系統需求
+
+* Windows 10/11 或 macOS 或 Linux
+* Python 3.6 或更新版本（程式會自動安裝）
+* Chrome/Chromium 或 Edge 瀏覽器
+
+> 注意事項
+> 初次執行時會自動安裝必要的套件，並且自動產生自簽憑證，在瀏覽器自動開啟時記得允許此站台與憑證。
+
+### 方式一：線上執行
+
+本系統可以完全免安裝使用，只需要以 Chrome/Chromium 或 Edge 瀏覽器連接到 https://kvm.jason.tools 即可使用完整功能。
+
+
+
+### 方式二：本機執行
+
+除了線上使用之外，本專案也提供了可在本機運作的模式，以便應對沒有網路可以使用的環境。
+
+#### 安裝方式
+```
+# 安裝方式一：下載後解壓縮
+1. 降載 https://github.com/jasoncheng7115/JTUSBKVM/releases/latest 最新版本的 ZIP 檔
+2. 解壓縮到任意資料夾
+
+# 安裝方式二：手動下載
+1. 至本專案的 web/ 資料夾手動下載 start_kvm.bat (Windows 用)、server.py
+2. 至本專案的 web/ 資料夾手動下載 start_kvm.sh (Linux/macOS 用)、server.py
+
+依據作業系統，執行對應的 start_kvm.bat 或 start.kvm.sh 即可啟動，並於完成後自動呼叫瀏覽器開啟 JTUSBKVM 使用介面。
+
+
+```
+
+
+
+---
+
 ## 使用說明
 
 > TODO
 
 
 ---
-
-## 本機執行
-
-> TODO
 

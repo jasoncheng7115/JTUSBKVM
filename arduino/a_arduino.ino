@@ -1,8 +1,8 @@
 /*
 =========================================================================
 JTUSBKVM - Arduino Board A (Source Controller)
-Version: 1.0.3
-Last Update: 2024-11-25
+Version: 1.0.4
+Last Update: 2024-12-01
 
 Author: Jason Cheng
 E-mail: jason@jason.tools
@@ -25,7 +25,12 @@ void setup() {
    Serial.begin(115200);        // USB 與控制端 PC 通訊，保持 115200
    Serial1.begin(9600);         // RS232 預設速率
    
-   while(!Serial);             // 等待 USB Serial 準備好
+   // 等待 USB Serial 準備好
+   // while(!Serial);           
+
+   // 改為加入 Timeout 機制
+   unsigned long startTime = millis();
+   while(!Serial && (millis() - startTime < 2000)); // 最多等待 2 秒
    
    // 清空所有緩衝區
    while(Serial.available()) Serial.read();

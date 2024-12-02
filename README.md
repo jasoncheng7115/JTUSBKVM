@@ -138,7 +138,7 @@
 #### 安裝方式
 ```
 # 安裝方式一：下載後解壓縮
-1. 降載 https://github.com/jasoncheng7115/JTUSBKVM/releases/latest 最新版本的 ZIP 檔
+1. 下載 https://github.com/jasoncheng7115/JTUSBKVM/releases/latest 最新版本的 ZIP 檔
 2. 解壓縮到任意資料夾
 
 # 安裝方式二：手動下載

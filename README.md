@@ -41,7 +41,7 @@
 
 ## 組成
 
-硬體雛形版本
+硬體雛形版本 v1.0，待更新為 v1.3 照片
 ![硬體雛形版本](https://github.com/jasoncheng7115/JTUSBKVM/blob/main/screenshot/1%20%E5%85%A8%E9%85%8D.JPG?raw=true)
 
 

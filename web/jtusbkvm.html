@@ -131,12 +131,15 @@ THE SOFTWARE.
             position: relative;
             background: black;
             overflow: hidden;
-            padding: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%;  /* 確保容器佔滿寬度 */
-            height: 100%; /* 確保容器佔滿高度 */
+        }
+        #videoContainer.zoomed {
+            overflow: auto;
+            display: block; /* 修改為 block 以支援正確的捲動 */
         }
         #showTerminal {
             margin-left: 15px;
@@ -319,6 +322,47 @@ THE SOFTWARE.
             85% { opacity: 1; }
             100% { opacity: 0; }
         }        
+
+        .zoom-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 0 0;
+        }
+
+        #videoContainer {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            background: black;
+        }
+
+        #videoContainer.zoomed {
+            overflow: auto;
+        }
+
+        #video {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            cursor: crosshair;
+            z-index: 10;
+        }
+
+
         .toggle-button:hover {
             background-color: #909090;
         }
@@ -544,7 +588,7 @@ THE SOFTWARE.
                 <div class="button-wrapper">
                     <div class="button-group">
                         <select id="videoSource"></select>
-                        <select id="resolution" title="選擇螢幕比例。請選擇符合被控端的比例，以避免發生游標偏移問題">
+                        <select id="resolution" title="螢幕比例，請選擇符合被控端的比例，以避免發生游標偏移問題">
                             <option value="1440x960" title="1440x960 / 1280x800">3:2</option>
                             <option value="1440x1080" title="1440x1080 / 1024x768 / 800x600">4:3</option>
                             <option value="1800x1080" title="1800x1080 / 1600x960 / 1280x768">5:3</option>
@@ -758,17 +802,85 @@ THE SOFTWARE.
 
         // 套用放大縮小效果
         function applyZoom() {
+            const videoWidth = video.videoWidth * currentZoom;
+            const videoHeight = video.videoHeight * currentZoom;
+            
+            // 設定視訊和遮罩層的變換
             videoElement.style.transform = `scale(${currentZoom})`;
             overlayElement.style.transform = `scale(${currentZoom})`;
-            overlayElement.style.transformOrigin = 'center center';
+            
+            // 設定變換原點為左上角
+            videoElement.style.transformOrigin = '0 0';
+            overlayElement.style.transformOrigin = '0 0';
+            
+            // 計算放大後的尺寸
+            const scaledWidth = Math.max(video.videoWidth * currentZoom, video.videoWidth);
+            const scaledHeight = Math.max(video.videoHeight * currentZoom, video.videoHeight);
             
             if (currentZoom > 1) {
+                // 啟用捲動條
                 videoContainer.style.overflow = 'auto';
+                
+                // 建立或取得包裝器
+                let wrapper = videoContainer.querySelector('.zoom-wrapper');
+                if (!wrapper) {
+                    wrapper = document.createElement('div');
+                    wrapper.className = 'zoom-wrapper';
+                    // 將現有元素移動到包裝器中
+                    while (videoContainer.firstChild) {
+                        wrapper.appendChild(videoContainer.firstChild);
+                    }
+                    videoContainer.appendChild(wrapper);
+                }
+                
+                // 設定包裝器的尺寸為放大後的實際尺寸
+                wrapper.style.width = `${scaledWidth}px`;
+                wrapper.style.height = `${scaledHeight}px`;
+                wrapper.style.position = 'absolute';
+                wrapper.style.left = '0';
+                wrapper.style.top = '0';
+                
+                // 確保視訊和遮罩層填滿包裝器
+                videoElement.style.position = 'absolute';
+                overlayElement.style.position = 'absolute';
+                videoElement.style.width = `${video.videoWidth}px`;
+                videoElement.style.height = `${video.videoHeight}px`;
+                overlayElement.style.width = `${video.videoWidth}px`;
+                overlayElement.style.height = `${video.videoHeight}px`;
+                
+                // 更新容器類別
+                videoContainer.classList.add('zoomed');
             } else {
+                // 縮放比例為 1 時，還原所有設定
                 videoContainer.style.overflow = 'hidden';
+                videoContainer.style.display = 'flex';  // 重要：恢復為 flex 布局
+                
+                const wrapper = videoContainer.querySelector('.zoom-wrapper');
+                if (wrapper) {
+                    while (wrapper.firstChild) {
+                        videoContainer.appendChild(wrapper.firstChild);
+                    }
+                    wrapper.remove();
+                }
+                
+                // 重設視訊和遮罩層的樣式
+                videoElement.style.position = 'relative';
+                overlayElement.style.position = 'absolute';
+                videoElement.style.width = '100%';
+                videoElement.style.height = '100%';
+                videoElement.style.maxWidth = '100%';  // 確保視訊不會超出容器
+                videoElement.style.maxHeight = '100%';
+                videoElement.style.transform = 'none';  // 移除縮放變換
+                overlayElement.style.transform = 'none';
+                
+                // 恢復原始的 object-fit 設定
+                videoElement.style.objectFit = 'contain';
+                
+                // 移除容器類別
+                videoContainer.classList.remove('zoomed');
             }
-
-            // 更新按鈕狀態
+            
+            // 更新縮放按鈕狀態
             zoomInButton.disabled = currentZoom >= ZOOM_MAX;
             zoomOutButton.disabled = currentZoom <= ZOOM_MIN;
         }

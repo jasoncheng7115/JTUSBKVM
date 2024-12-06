@@ -54,13 +54,13 @@
 * SP3232 RS232 轉接板 x 1
 * HDMI 影像擷取器 x 1 
 * VGA to HDMI 轉接頭 x 1
-* Type C USB Hub x 1
+* Type C USB Hub 附轉接頭 x 1
 * Type C 延長線 1M x 1
 * HDMI 0.3M 線材 x 1
 * DB9 to RJ45 轉接線 x 1
 * MicroUSB to TypeA 0.3M 線材 x 2
 * 透明收納盒 x 1
-* 全都在蝦皮購入，成本合計大約 一千二
+* 全都在網路購入，成本合計大約 一千三
 
 ### 軟體組成
 * 控制端與被控端免安裝任何軟體

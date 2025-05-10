@@ -109,11 +109,36 @@
 
 ---
 
-## 接線圖
+## 接線說明
 
+### 接線圖
 > TODO
->
 
+### 接線表
+
+| **來源裝置** | **來源接腳** | **目的裝置** | **目的接腳** |
+|:---|:---|:---|:---|
+| Arduino Pro Micro A | USB連接埠 | 控制端電腦 | USB連接埠 |
+| Arduino Pro Micro B | USB連接埠 | 被控制端電腦 | USB連接埠 |
+| Arduino Pro Micro A | Pin8 接腳 | Arduino Pro Micro B | RX 接腳 |
+| Arduino Pro Micro A | GND 接腳 | Arduino Pro Micro B | GND 接腳 |
+| Arduino Pro Micro A | RX 接腳 | RS232模組 (SP3232) | TX 接腳 |
+| Arduino Pro Micro A | TX 接腳 | RS232模組 (SP3232) | RX 接腳 |
+| Arduino Pro Micro A | GND 接腳 | RS232模組 (SP3232) | GND 接腳 |
+| Arduino Pro Micro A | VCC (5V) 接腳 | RS232模組 (SP3232) | VCC 接腳 |
+
+
+### 說明
+
+* Arduino A 的 USB 連接埠：連接到控制端電腦（也就是你要操作的那台電腦）。
+* Arduino B 的 USB 連接埠：連接到被控制端電腦（要被遠端控制的那台電腦）。
+* Pin8 接腳：從 Arduino A 輸出訊號，送到 Arduino B 板 的 RX 接腳。
+* GND（接地）：Arduino A、Arduino B、RS232 模組三者的 GND 接腳必須互相連接（共地）。
+* RS232 模組 (SP3232)：作為 TTL電平與標準 RS232 通訊規格之間的轉換橋樑。這邊使用的是 TTL 側接腳（模組上黃色排針區域）。
+* RX/TX 接法：
+   * A板的 RX 接 RS232 模組的 TX（交叉接法）
+   * A板的 TX 接 RS232 模組的 RX（交叉接法）
+* 硬體流量控制 (CTS/RTS)：可不連接，懸空即可，不影響通訊功能。
 
 ---
 

@@ -174,17 +174,16 @@
 除了線上使用之外，本專案也提供了可在本機運作的模式，以便應對沒有網路可以使用的環境。
 
 #### 安裝方式
-```
+
 Windows:
-* 至本專案的 local_run/ 資料夾手動下載 start_kvm.bat、server.py
+1. 至本專案的 local_run/ 資料夾手動下載 start_kvm.bat、server.py 
+2. 執行 start_kvm.bat，過程中會引導需要安裝 Python 與 OpenSSL
+3. 完成後自動呼叫瀏覽器開啟 JTUSBKVM 使用介面。
 
 Linux/macOS:
-* 至本專案的 local_run/ 資料夾手動下載 start_kvm.sh、server.py
-
-依據作業系統，執行對應的 start_kvm.bat (Windows) 或 start_kvm.sh (Linux/macOS) 即可啟動，過程中會引導需要安裝 Python 與 OpenSSL，並於完成後自動呼叫瀏覽器開啟 JTUSBKVM 使用介面。
-
-
-```
+1. 至本專案的 local_run/ 資料夾手動下載 start_kvm.sh、server.py
+2. 執行 start_kvm.sh，過程中會引導需要安裝 Python 與 OpenSSL
+3. 完成後自動呼叫瀏覽器開啟 JTUSBKVM 使用介面。
 
 
 

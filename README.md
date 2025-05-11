@@ -171,7 +171,7 @@ Windows:
 Linux/macOS:
 * 至本專案的 local_run/ 資料夾手動下載 start_kvm.sh、server.py
 
-依據作業系統，執行對應的 start_kvm.bat (Windows) 或 start.kvm.sh (Linux/macOS) 即可啟動，過程中會引導需要安裝 Python 與 OpenSSL，並於完成後自動呼叫瀏覽器開啟 JTUSBKVM 使用介面。
+依據作業系統，執行對應的 start_kvm.bat (Windows) 或 start_kvm.sh (Linux/macOS) 即可啟動，過程中會引導需要安裝 Python 與 OpenSSL，並於完成後自動呼叫瀏覽器開啟 JTUSBKVM 使用介面。
 
 
 ```

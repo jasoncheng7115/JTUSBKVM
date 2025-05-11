@@ -1,43 +1,95 @@
-# Windowsç‰ˆæœ¬ (start.bat):
 @echo off
-chcp 65001 > nul
+rem =========================================================================
+rem
+rem JTUSBKVM - Web Console Loader
+rem
+rem Version: 1.1.0
+rem Last Update: 2024-05-11
+rem
+rem ­ì§@ªÌ: Jason Cheng
+rem ¹q¤l¶l¥ó: jason@jason.tools
+rem GitHub: https://github.com/jasoncheng7115
+rem
+rem ±ÂÅv: GNU Affero General Public License v3.0
+rem
+rem ª`·N: ¥»ÀÉ®×¶·¥H Big5 (cp950) ½s½X¡A¥H¤Î CRLF ´«¦æ¦r¤¸¦sÀÉ
+rem
+rem
+rem =========================================================================
+
+rem ³]©wÁcÅé¤¤¤å¥N½X­¶
+chcp 950 >nul
 title JTUSBKVM Server
 
-:: æª¢æŸ¥ Python æ˜¯å¦å®‰è£
-python --version > nul 2>&1
-if errorlevel 1 (
-    echo Python æœªå®‰è£ï¼
-    echo è«‹å¾ä»¥ä¸‹ä½ç½®ä¸‹è¼‰ä¸¦å®‰è£ Pythonï¼š
-    echo https://www.python.org/downloads/
+echo JTUSBKVM ¦øªA¾¹±Ò°Ê¤u¨ã
+echo ====================================
+echo.
+echo ¥¿¦bÀË¬d Python ¦w¸Ëª¬ºA...
+echo.
+
+where python >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ¿ù»~: Python ¥¼¦w¸Ë©Î¥¼¥[¤J¨t²Î¸ô®|¡I
     echo.
-    echo å®‰è£æ™‚è«‹å‹¾é¸ "Add Python to PATH"
+    echo ½Ğ¤U¸ü¨Ã¦w¸Ë Python:
+    echo https://www.python.org/downloads/windows/
+    echo.
+    echo ­«­n: ¦w¸Ë®É½Ğ¤Ä¿ï [v] Add Python.exe to PATH
     echo.
     pause
     exit /b 1
 )
 
-:: æª¢æŸ¥ Python ç‰ˆæœ¬
-for /f "tokens=2" %%I in ('python --version 2^>^&1') do set "PYTHON_VERSION=%%I"
-for /f "tokens=1 delims=." %%I in ("%PYTHON_VERSION%") do set "PYTHON_MAJOR=%%I"
-for /f "tokens=2 delims=." %%I in ("%PYTHON_VERSION%") do set "PYTHON_MINOR=%%I"
+for /f "tokens=2" %%a in ('python --version 2^>^&1') do set pyver=%%a
+echo ¤w§ä¨ì Python %pyver%
+echo.
 
-if %PYTHON_MAJOR% LSS 3 (
-    echo Python ç‰ˆæœ¬éèˆŠï¼
-    echo ç›®å‰ç‰ˆæœ¬ï¼š%PYTHON_VERSION%
-    echo éœ€è¦ Python 3.6 æˆ–æ›´æ–°ç‰ˆæœ¬
+echo ÀË¬d¥²­nªº Python ¼Ò²Õ...
+python -c "import requests" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ¥¿¦b¦w¸Ë requests ¼Ò²Õ...
+    python -m pip install requests
+    if %errorlevel% neq 0 (
+        echo ¿ù»~: ¦w¸Ë requests ¼Ò²Õ¥¢±Ñ¡I
+        echo ½Ğ¤â°Ê°õ¦æ¥H¤U©R¥O:
+        echo python -m pip install requests
+        echo.
+        pause
+        exit /b 1
+    )
+    echo Requests ¼Ò²Õ¦w¸Ë¦¨¥\¡C
+    echo.
+)
+
+echo ÀË¬d server.py ÀÉ®×...
+if not exist server.py (
+    echo ¿ù»~: §ä¤£¨ì server.py ÀÉ®×¡I
+    echo ½Ğ½T»{ server.py »P¦¹§å¦¸ÀÉ¦ì©ó¦P¤@¥Ø¿ı¡C
     echo.
     pause
     exit /b 1
 )
-if %PYTHON_MAJOR%==3 if %PYTHON_MINOR% LSS 6 (
-    echo Python ç‰ˆæœ¬éèˆŠï¼
-    echo ç›®å‰ç‰ˆæœ¬ï¼š%PYTHON_VERSION%
-    echo éœ€è¦ Python 3.6 æˆ–æ›´æ–°ç‰ˆæœ¬
-    echo.
-    pause
-    exit /b 1
-)
 
-:: åŸ·è¡Œä¼ºæœå™¨
+echo.
+echo ©Ò¦³ÀË¬d¤w³q¹L¡A·Ç³Æ±Ò°Ê¦øªA¾¹...
+echo ====================================
+echo.
+echo ¥¿¦b±Ò°Ê JTUSBKVM ¦øªA¾¹...
+echo ½Ğ¤ÅÃö³¬¦¹µøµ¡¡AÃö³¬µøµ¡±N·|²×¤î¦øªA¾¹¡C
+echo.
+
 python server.py
+if %errorlevel% neq 0 (
+    echo.
+    echo ¿ù»~: ¦øªA¾¹±Ò°Ê¥¢±Ñ¡I
+    echo ½ĞÀË¬d¿ù»~°T®§¨Ã­×¥¿°İÃD¡C
+    echo.
+    pause
+    exit /b 1
+)
+
+echo.
+echo ¦øªA¾¹¤wÃö³¬¡C
+echo.
+pause
 exit /b 0

@@ -3,8 +3,8 @@ rem =========================================================================
 rem
 rem JTUSBKVM - Web Console Loader
 rem
-rem Version: 1.1.0
-rem Last Update: 2024-05-11
+rem Version: 1.2.0
+rem Last Update: 2025-05-11
 rem
 rem 原作者: Jason Cheng
 rem 電子郵件: jason@jason.tools

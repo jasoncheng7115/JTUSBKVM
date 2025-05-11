@@ -3,8 +3,8 @@
 
 JTUSBKVM - Web Console Loader
 
-Version: 1.1.0
-Last Update: 2024-11-26
+Version: 1.2.0
+Last Update: 2025-05-11
 
 Author: Jason Cheng
 E-mail: jason@jason.tools
@@ -96,6 +96,15 @@ def ensure_directory_exists(filepath):
     if directory and not os.path.exists(directory):
         os.makedirs(directory)
 
+def check_internet_connection():
+    """檢查網路連線狀態"""
+    try:
+        # 嘗試連線到一個可靠的網站
+        requests.get("https://www.google.com", timeout=3)
+        return True
+    except:
+        return False
+
 def download_file(url, local_path):
     """下載檔案"""
     try:
@@ -109,8 +118,35 @@ def download_file(url, local_path):
         print(f'下載 {local_path} 時發生錯誤: {str(e)}')
         return False
 
+def check_local_files():
+    """檢查本地檔案是否存在，並返回缺少的檔案清單"""
+    missing_files = []
+    for local_path in REMOTE_FILES.keys():
+        if not os.path.exists(local_path):
+            missing_files.append(local_path)
+    return missing_files
+
 def check_and_update_files():
     """檢查並更新所有需要的檔案"""
+    # 檢查網路連線
+    has_internet = check_internet_connection()
+    
+    # 檢查本地檔案
+    missing_files = check_local_files()
+    
+    if not has_internet:
+        if missing_files:
+            print("目前沒有網路連線，且本地缺少以下檔案：")
+            for file in missing_files:
+                print(f"- {file}")
+            print("請連線網路後再次執行程式或手動添加缺少的檔案。")
+            print("但程式仍將嘗試使用現有檔案啟動...")
+            return len(missing_files) == 0
+        else:
+            print("目前沒有網路連線，將使用本地檔案運行...")
+            return True
+    
+    # 如果有網路，則嘗試更新
     all_success = True
     
     for local_path, remote_url in REMOTE_FILES.items():
@@ -124,29 +160,49 @@ def check_and_update_files():
                     print(f'錯誤：無法下載 {local_path}')
                 else:
                     print(f'{local_path} 下載完成')
-            elif local_path == 'index.html':  # 只檢查 HTML 檔案的版本
-                response = requests.get(remote_url, timeout=5)
-                response.raise_for_status()
-                remote_content = response.text
-                remote_version = get_version_from_html(remote_content)
-                
-                with open(local_file, 'r', encoding='utf-8') as f:
-                    local_content = f.read()
-                    local_version = get_version_from_html(local_content)
+            else:
+                # 檢查遠端檔案是否有更新
+                try:
+                    response = requests.get(remote_url, timeout=5)
+                    response.raise_for_status()
+                    remote_content = response.content
                     
-                if remote_version > local_version:
-                    print(f'發現新版本 {remote_version}，更新中...')
-                    with open(local_file, 'w', encoding='utf-8') as f:
-                        f.write(remote_content)
-                    print('更新完成')
-                else:
-                    print(f'目前版本 {local_version} 已是最新')
+                    # 對於 HTML 檔案，檢查版本號
+                    if local_path == 'index.html':
+                        remote_text = response.text
+                        remote_version = get_version_from_html(remote_text)
+                        
+                        with open(local_file, 'r', encoding='utf-8') as f:
+                            local_content = f.read()
+                            local_version = get_version_from_html(local_content)
+                            
+                        if remote_version > local_version:
+                            print(f'發現新版本 {remote_version}，更新中...')
+                            with open(local_file, 'w', encoding='utf-8') as f:
+                                f.write(remote_text)
+                            print(f'{local_path} 更新完成')
+                        else:
+                            print(f'目前版本 {local_version} 已是最新')
+                    else:
+                        # 對於其他檔案，檢查檔案大小或修改時間
+                        # 由於無法直接獲取遠端檔案的修改時間，這裡直接比較檔案大小
+                        local_size = os.path.getsize(local_path)
+                        remote_size = len(remote_content)
+                        
+                        if remote_size != local_size:
+                            print(f'發現 {local_path} 有更新，下載中...')
+                            with open(local_path, 'wb') as f:
+                                f.write(remote_content)
+                            print(f'{local_path} 更新完成')
+                except Exception as e:
+                    print(f'檢查 {local_path} 更新時發生錯誤: {str(e)}')
+                    print('將使用本地檔案繼續...')
                     
         except Exception as e:
             print(f'處理 {local_path} 時發生錯誤: {str(e)}')
-            all_success = False
+            print('將使用本地檔案繼續...')
             
-    return all_success
+    return True  # 即使有錯誤，也會嘗試使用已有的本地檔案
 
 def check_openssl():
     """檢查是否有安裝 OpenSSL"""
@@ -326,9 +382,7 @@ def main():
     os.chdir(Path(__file__).parent)
     
     # 檢查並更新所有需要的檔案
-    if not check_and_update_files():
-        input('按 Enter 鍵結束程式...')
-        return
+    files_check_result = check_and_update_files()
     
     # 建立 SSL 憑證
     if not create_cert():

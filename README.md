@@ -189,7 +189,7 @@ Linux/macOS:
 2. 可下載至 /opt/jtusbkvm
 3. 執行 start_kvm.sh，過程中會引導需要安裝 Python 與 OpenSSL
 4. 完成後自動呼叫瀏覽器開啟 JTUSBKVM 使用介面
-5. 5. 使用無誤後，可將 start_kvm.sh 在桌面建立連結，方便日後使用
+5. 使用無誤後，可將 start_kvm.sh 在桌面建立 連結/別名/啟動器，方便日後使用
 
 
 

@@ -70,10 +70,10 @@
 * 視訊輸入採用瀏覽器標準 MediaStream API
 * 控制器連接採用瀏覽器標準 Web Serial API
 * Web 控制端頁面可使用我的 https://kvm.jason.tools
-* Web 控制端頁面也可以使用我撰寫的離線應用程式，說明待撰寫 (local_run 下)
+* Web 控制端頁面也可以使用我撰寫的離線應用程式版本
 
 ### 韌體組成
-* Arduino 程式碼分為 A B 兩片開發板，均先釋出
+* Arduino 程式碼分為 A B 兩片開發板
  
   
 > 有許多朋友提到為何不買零件重新 layout 板子，這樣可以體積更小、成本更低呢？

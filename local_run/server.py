@@ -3,8 +3,8 @@
 
 JTUSBKVM - Web Console Loader
 
-Version: 1.2.0
-Last Update: 2025-05-11
+Version: 1.3.0
+Last Update: 2025-05-12
 
 Author: Jason Cheng
 E-mail: jason@jason.tools
@@ -115,11 +115,13 @@ def download_file(url, local_path):
             f.write(response.content)
         return True
     except Exception as e:
+        print()
+        print()
         print(f'下載 {local_path} 時發生錯誤: {str(e)}')
         return False
 
 def check_local_files():
-    """檢查本地檔案是否存在，並返回缺少的檔案清單"""
+    """檢查本機檔案是否存在，並顯示少的檔案清單"""
     missing_files = []
     for local_path in REMOTE_FILES.keys():
         if not os.path.exists(local_path):
@@ -131,19 +133,21 @@ def check_and_update_files():
     # 檢查網路連線
     has_internet = check_internet_connection()
     
-    # 檢查本地檔案
+    # 檢查本機檔案
     missing_files = check_local_files()
     
     if not has_internet:
         if missing_files:
-            print("目前沒有網路連線，且本地缺少以下檔案：")
+            print("目前沒有網路連線可使用，且本機缺少以下檔案：")
             for file in missing_files:
                 print(f"- {file}")
-            print("請連線網路後再次執行程式或手動添加缺少的檔案。")
+            print("請連線網路後再次執行程式或手動加入缺少的檔案。")
             print("但程式仍將嘗試使用現有檔案啟動...")
             return len(missing_files) == 0
         else:
-            print("目前沒有網路連線，將使用本地檔案運行...")
+            print()
+            print()
+            print("目前沒有網路連線，將使用本機檔案運行...")
             return True
     
     # 如果有網路，則嘗試更新
@@ -157,6 +161,8 @@ def check_and_update_files():
                 print(f'下載 {local_path}...')
                 if not download_file(remote_url, local_path):
                     all_success = False
+                    print()
+                    print()
                     print(f'錯誤：無法下載 {local_path}')
                 else:
                     print(f'{local_path} 下載完成')
@@ -167,7 +173,7 @@ def check_and_update_files():
                     response.raise_for_status()
                     remote_content = response.content
                     
-                    # 對於 HTML 檔案，檢查版本號
+                    # 對於 HTML 檔案，檢查版本號碼
                     if local_path == 'index.html':
                         remote_text = response.text
                         remote_version = get_version_from_html(remote_text)
@@ -195,18 +201,24 @@ def check_and_update_files():
                                 f.write(remote_content)
                             print(f'{local_path} 更新完成')
                 except Exception as e:
+                    print()
+                    print()
                     print(f'檢查 {local_path} 更新時發生錯誤: {str(e)}')
-                    print('將使用本地檔案繼續...')
+                    print('將使用本機檔案繼續...')
                     
         except Exception as e:
+            print()
+            print()
             print(f'處理 {local_path} 時發生錯誤: {str(e)}')
-            print('將使用本地檔案繼續...')
+            print('將使用本機檔案繼續...')
             
-    return True  # 即使有錯誤，也會嘗試使用已有的本地檔案
+    return True  # 即使有錯誤，也會嘗試使用已有的本機檔案
 
 def check_openssl():
     """檢查是否有安裝 OpenSSL"""
     if shutil.which('openssl') is None:
+        print()
+        print()
         print('錯誤：未安裝 OpenSSL')
         print('請安裝 OpenSSL:')
         print('Windows: https://slproweb.com/products/Win32OpenSSL.html')
@@ -256,9 +268,13 @@ def create_cert():
         
         # 先檢查檔案權限
         if cert_path.exists() and not os.access(cert_path, os.W_OK):
+            print()
+            print()
             print(f'錯誤：無法寫入 {cert_path}，請檢查檔案權限')
             return False
         if key_path.exists() and not os.access(key_path, os.W_OK):
+            print()
+            print()
             print(f'錯誤：無法寫入 {key_path}，請檢查檔案權限')
             return False
             
@@ -274,11 +290,15 @@ def create_cert():
             ], capture_output=True, text=True)
             
             if result.returncode != 0:
+                print()
+                print()
                 print('錯誤：建立憑證失敗')
                 print(result.stderr)
                 return False
                 
         except Exception as e:
+            print()
+            print()
             print(f'錯誤：建立憑證時發生錯誤 - {str(e)}')
             return False
             
@@ -366,13 +386,16 @@ def open_supported_browser(url):
                     return True
                 except FileNotFoundError:
                     continue
-                    
+        print()
+        print()            
         print('找不到支援的瀏覽器，請手動開啟以下網址：')
         print(url)
         print('請使用 Chrome 或 Edge 瀏覽器（89 版或更新）')
         return False
         
     except Exception as e:
+        print()
+        print()
         print(f'開啟瀏覽器時發生錯誤：{str(e)}')
         print(f'請手動使用 Chrome 或 Edge 開啟：{url}')
         return False
@@ -392,6 +415,8 @@ def main():
     # 尋找可用的 port
     port = find_available_port()
     if not port:
+        print()
+        print()
         print('錯誤：無法找到可用的 port（4443-4542）')
         input('按 Enter 鍵結束程式...')
         return
@@ -401,6 +426,8 @@ def main():
     try:
         httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
     except Exception as e:
+        print()
+        print()
         print(f'錯誤：無法建立伺服器 - {str(e)}')
         input('按 Enter 鍵結束程式...')
         return
@@ -411,6 +438,8 @@ def main():
         context.load_cert_chain('cert.pem', 'key.pem')
         httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
     except Exception as e:
+        print()
+        print()
         print(f'錯誤：SSL 設定失敗 - {str(e)}')
         input('按 Enter 鍵結束程式...')
         return
@@ -431,6 +460,8 @@ def main():
         print('\n伺服器已停止')
         httpd.server_close()
     except Exception as e:
+        print()
+        print()
         print(f'\n錯誤：伺服器運行時發生錯誤 - {str(e)}')
     finally:
         input('按 Enter 鍵結束程式...')

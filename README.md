@@ -175,8 +175,11 @@
 
 > **注意事項**
 
-> 初次執行時會自動安裝必要的套件 (Windows 請事先安裝好 Python 3.6 以上及 OpenSSL，Python 可以從 Microsoft Store 安裝)
-> 並且自動產生自簽憑證，在瀏覽器自動開啟時記得允許此站台與憑證。
+> 初次執行時會自動安裝必要的套件，並且自動產生自簽憑證，在瀏覽器自動開啟時記得允許此站台與憑證。
+
+> 但 Windows 則須事先安裝好 Python 3.6+ ([從 Microsoft Store 安裝](https://apps.microsoft.com/detail/9nrwmjp3717k?hl=en-US&gl=US)) 及 OpenSSL ([前往下載](https://slproweb.com/products/Win32OpenSSL.html)) 
+
+ 
 
 
 #### 安裝方式

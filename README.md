@@ -184,7 +184,7 @@
 ##### Windows:
 1. 至本專案的 local_run/ 資料夾手動下載 start_kvm.bat、server.py
 2. 可下載至 C:\JTUSBKVM 目錄下
-3. 執行 start_kvm.bat，過程中會引導需要安裝 Python 與 OpenSSL
+3. 請以 **系統管理員身份** 執行 start_kvm.bat，過程中會引導需要安裝 Python 與 OpenSSL
 4. 完成後自動呼叫瀏覽器開啟 JTUSBKVM 使用介面。
 5. 使用無誤後，可將 start_kvm.bat 捷徑放至桌面，方便日後使用
 

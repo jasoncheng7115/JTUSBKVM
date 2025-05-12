@@ -22,6 +22,34 @@ chcp 950 >nul
 title JTUSBKVM Server
 
 echo JTUSBKVM 伺服器啟動工具
+
+:: 檢查是否以管理員身份運行
+net session >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ======================================================
+    echo               需要系統管理員權限
+    echo ======================================================
+    echo.
+    echo 請使用以下步驟重新啟動：
+    echo   1. 右鍵點選此批次檔
+    echo   2. 選擇「以系統管理員身份執行」
+    echo   3. 在 UAC 提示視窗中點選「是」
+    echo.
+    echo 按任意鍵結束...
+    pause >nul
+    exit /B 1
+)
+
+:: 已有管理員權限，繼續執行
+echo ======================================================
+echo        JTUSBKVM 伺服器啟動工具 (管理員模式)
+echo ======================================================
+echo.
+
+:: 切換到批次檔所在目錄
+cd /d %~dp0
+echo 工作目錄：%CD%
+
 echo ====================================
 echo.
 echo 正在檢查 Python 安裝狀態...
@@ -39,6 +67,7 @@ if %errorlevel% neq 0 (
     pause
     exit /b 1
 )
+
 
 for /f "tokens=2" %%a in ('python --version 2^>^&1') do set pyver=%%a
 echo 已找到 Python %pyver%
@@ -60,6 +89,7 @@ if %errorlevel% neq 0 (
     echo Requests 模組安裝成功。
     echo.
 )
+
 
 echo 檢查 server.py 檔案...
 if not exist server.py (

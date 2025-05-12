@@ -3,7 +3,7 @@
 
 JTUSBKVM - Web Console Loader
 
-Version: 1.3.0
+Version: 1.3.1
 Last Update: 2025-05-12
 
 Author: Jason Cheng
@@ -82,6 +82,8 @@ REMOTE_FILES = {
     'js/xterm.js': 'https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js',
     'js/xterm-addon-fit.js': 'https://cdn.jsdelivr.net/npm/xterm-addon-fit/lib/xterm-addon-fit.js'
 }
+
+OPENSSL_PATH = "C:\\Program Files\\OpenSSL-Win64\\bin\\openssl.exe"
 
 def get_version_from_html(content):
     """從 HTML 內容中取得版本號"""
@@ -216,11 +218,17 @@ def check_and_update_files():
 
 def check_openssl():
     """檢查是否有安裝 OpenSSL"""
+    # 優先使用指定的 OpenSSL 路徑
+    if os.path.exists(OPENSSL_PATH) and os.access(OPENSSL_PATH, os.X_OK):
+        return True
+    
+    # 若指定路徑不存在或無法執行，則檢查系統 PATH
     if shutil.which('openssl') is None:
         print()
         print()
         print('錯誤：未安裝 OpenSSL')
         print('請安裝 OpenSSL:')
+        print()
         print('Windows: https://slproweb.com/products/Win32OpenSSL.html')
         print('macOS: 使用 brew install openssl')
         print('Linux: sudo apt install openssl 或對應的包管理命令')
@@ -230,11 +238,15 @@ def check_openssl():
 def is_cert_expired(cert_path):
     """檢查憑證是否過期"""
     try:
+        # 使用設定的 OpenSSL 路徑
+        openssl_command = OPENSSL_PATH if os.path.exists(OPENSSL_PATH) else 'openssl'
+        
         # 使用 openssl 檢查憑證過期日期
         result = subprocess.run(
-            ['openssl', 'x509', '-in', cert_path, '-noout', '-enddate'],
+            [openssl_command, 'x509', '-in', cert_path, '-noout', '-enddate'],
             capture_output=True,
-            text=True
+            text=True,
+            timeout=30  # 增加 timeout 參數，避免命令卡住
         )
         if result.returncode != 0:
             return True
@@ -247,7 +259,7 @@ def is_cert_expired(cert_path):
         return end_date - datetime.datetime.now() < datetime.timedelta(days=30)
     except Exception:
         return True
-
+    
 def create_cert():
     """建立或更新 SSL 憑證"""
     cert_path = Path('cert.pem')
@@ -279,15 +291,18 @@ def create_cert():
             return False
             
         try:
+            # 使用設定的 OpenSSL 路徑
+            openssl_command = OPENSSL_PATH if os.path.exists(OPENSSL_PATH) else 'openssl'
+            
             # 建立新憑證
             result = subprocess.run([
-                'openssl', 'req', '-new', '-x509', 
+                openssl_command, 'req', '-new', '-x509', 
                 '-keyout', 'key.pem', 
                 '-out', 'cert.pem',
                 '-days', '365',
                 '-nodes',
                 '-subj', '/CN=localhost'
-            ], capture_output=True, text=True)
+            ], capture_output=True, text=True, timeout=60)  # 增加 timeout 參數
             
             if result.returncode != 0:
                 print()

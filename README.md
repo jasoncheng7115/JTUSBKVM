@@ -151,7 +151,8 @@
 > TODO
 
 ### 二進位檔案燒錄方式
-> TODO
+[二進位檔案燒錄流程](https://github.com/jasoncheng7115/JTUSBKVM/blob/main/FLASHFW.md)
+
 
 ---
 

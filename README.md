@@ -148,7 +148,9 @@
 建議採用二進位檔燒錄方式較方便。若使用原始碼燒錄方式需要先安裝 Arduino IDE 以及相關函式庫，較為麻煩。
 
 ### 原始程式碼燒錄方式
-> TODO
+1. 須安裝這個函式庫：HID-Project by NicoHood
+2. 利用 Arduino 標準燒錄功能，分別開啟 a_arduino.ino 與 b_arduino.ino 燒錄至兩片板子
+
 
 ### 二進位檔案燒錄方式 (待測試)
 [二進位檔案燒錄流程](https://github.com/jasoncheng7115/JTUSBKVM/blob/main/FLASHFW.md)

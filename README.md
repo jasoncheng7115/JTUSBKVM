@@ -113,7 +113,7 @@
 ## 接線說明
 
 ### 接線圖
-> TODO
+![接線示意圖](https://raw.githubusercontent.com/jasoncheng7115/JTUSBKVM/refs/heads/main/images/JTUSBKVM-wiring.png)
 
 ### 接線表
 
